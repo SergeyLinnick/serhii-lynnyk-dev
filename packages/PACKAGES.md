@@ -1,0 +1,12 @@
+# Packages
+
+| Package                        | Purpose                           | Dependencies                                              | Exports                                             | Docs                                                |
+| ------------------------------ | --------------------------------- | --------------------------------------------------------- | --------------------------------------------------- | --------------------------------------------------- |
+| `@workspace/typescript-config` | Shared TypeScript configs         | —                                                         | `base.json`, `nextjs.json`, `react-library.json`    | —                                                   |
+| `@workspace/eslint-config`     | Shared ESLint v9 flat configs     | eslint, typescript-eslint, plugins                        | `./base`, `./next-js`, `./react-internal`           | —                                                   |
+| `@workspace/prettier-config`   | Shared Prettier config            | prettier-plugin-organize-imports                          | `prettierrc.json`                                   | —                                                   |
+| `@workspace/utils`             | Shared utilities                  | clsx, tailwind-merge, date-fns                            | `cn`, `formatDate`                                  | [docs/utils-package.md](../docs/utils-package.md)   |
+| `@workspace/models`            | Schemas, types, constants         | zod, @workspace/utils                                     | errors, constants, navigation, task schemas/types   | [docs/models-package.md](../docs/models-package.md) |
+| `@workspace/auth`              | Authentication                    | better-auth, @workspace/utils                             | server, client, middleware, types                   | [docs/auth-package.md](../docs/auth-package.md)     |
+| `@workspace/ui`                | UI components (shadcn/ui)         | radix-ui, cva, sonner, tailwindcss                        | Button, Input, Label, Card, Toaster, cn             | [docs/ui.md](../docs/ui.md)                         |
+| `@workspace/api`               | API client + TanStack Query hooks | @tanstack/react-query, ky, @workspace/auth, @workspace/ui | ApiProvider, queryKeys, task hooks/services/mappers | [docs/api-package.md](../docs/api-package.md)       |

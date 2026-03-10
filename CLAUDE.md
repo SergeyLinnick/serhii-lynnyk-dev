@@ -1,0 +1,8 @@
+- **Must** follow `docs/structure.md` when creating or modifying files and folders.
+- **Must** follow `docs/features.md` when working on app feature modules (`apps/.../features/`).
+- **Must** follow `docs/ui.md` when working on UI components.
+- **Must** follow `docs/api-package.md` when working on API hooks, services, or mappers.
+- **Must** follow `docs/models-package.md` when working on types, schemas, or constants.
+- **Must** follow `docs/auth-package.md` when working on authentication.
+- **Must** follow `docs/utils-package.md` when working on shared utilities.
+- **Must** follow `docs/BEST_PRACTICES.md` when working on code.

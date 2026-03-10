@@ -1,0 +1,83 @@
+html:has(.portfolio-theme) {
+	scroll-behavior: smooth;
+}
+
+.portfolio-theme {
+	--font-display-family: var(--font-space-grotesk);
+	--font-display-weight: 700;
+	--font-display-tracking: var(--tracking-tighter);
+	--font-body-family: var(--font-space-grotesk);
+	--font-body-weight: 400;
+	--font-body-tracking: var(--tracking-normal);
+
+	--m: calc(var(--spacing) * 4);
+	--g: calc(var(--spacing) * 4);
+	--safe-area-left: max(var(--m), env(safe-area-inset-left));
+	--safe-area-right: max(var(--m), env(safe-area-inset-right));
+
+	--primary: oklch(0.6 0.2 120);
+	--primary-foreground: oklch(0.98 0 0);
+	--radius: 0.5rem;
+	--background: oklch(0.98 0 0);
+	--foreground: oklch(0.1 0.01 286);
+	--card: oklch(0.96 0.005 286);
+	--card-foreground: oklch(0.1 0.01 286);
+	--popover: oklch(0.98 0 0);
+	--popover-foreground: oklch(0.1 0.01 286);
+	--secondary: oklch(0.92 0.01 286);
+	--secondary-foreground: oklch(0.1 0.01 286);
+	--muted: oklch(0.92 0.01 286);
+	--muted-foreground: oklch(0.45 0.01 286);
+	--accent: oklch(0.92 0.01 286);
+	--accent-foreground: oklch(0.6 0.2 120);
+	--destructive: oklch(0.55 0.2 20);
+	--destructive-foreground: oklch(0.98 0 0);
+	--border: oklch(0.88 0.01 286);
+	--input: oklch(0.88 0.01 286);
+	--ring: oklch(0.6 0.2 120);
+}
+
+:where(.dark-mode) .portfolio-theme {
+	--primary: oklch(0.88 0.2 120);
+	--primary-foreground: oklch(0.1 0.02 286);
+	--background: oklch(0.1 0.01 286);
+	--foreground: oklch(0.98 0 0);
+	--card: oklch(0.12 0.01 286);
+	--card-foreground: oklch(0.98 0 0);
+	--popover: oklch(0.12 0.01 286);
+	--popover-foreground: oklch(0.98 0 0);
+	--secondary: oklch(0.2 0.02 286);
+	--secondary-foreground: oklch(0.98 0 0);
+	--muted: oklch(0.2 0.02 286);
+	--muted-foreground: oklch(0.6 0.01 286);
+	--accent: oklch(0.25 0.02 286);
+	--accent-foreground: oklch(0.88 0.2 120);
+	--destructive: oklch(0.6 0.2 20);
+	--destructive-foreground: oklch(0.98 0 0);
+	--border: oklch(0.25 0.02 286);
+	--input: oklch(0.25 0.02 286);
+	--ring: oklch(0.88 0.2 120);
+}
+
+@media (width >= 1024px) {
+	.portfolio-theme {
+		--m: calc(var(--spacing) * 8);
+	}
+}
+
+@utility px-safe {
+	padding-left: var(--safe-area-left);
+	padding-right: var(--safe-area-right);
+}
+
+@utility font-display {
+	font-family: var(--font-display-family);
+	font-weight: var(--font-display-weight);
+	letter-spacing: var(--font-display-tracking);
+}
+
+@utility font-body {
+	font-family: var(--font-body-family);
+	font-weight: var(--font-body-weight);
+	letter-spacing: var(--font-body-tracking);
+}

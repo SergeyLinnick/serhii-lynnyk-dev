@@ -1,0 +1,26 @@
+{
+  "name": "@workspace/models",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
+    "@workspace/utils": "workspace:*",
+    "react-hook-form": "^7.62.0",
+    "zod": "^4.1.4"
+  },
+  "devDependencies": {
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/prettier-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "eslint": "^9.20.1",
+    "typescript": "^5.9.2"
+  },
+  "exports": {
+    ".": "./index.ts"
+  },
+  "type": "module"
+}
