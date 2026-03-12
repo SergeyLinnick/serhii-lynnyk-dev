@@ -4,6 +4,8 @@ node_modules/
 .env.local
 .env.*.local
 
+.vercel
+
 .turbo/
 .next/
 out/
@@ -22,3 +24,5 @@ coverage/
 CLAUDE.local.md
 
 **/next-env.d.ts
+
+

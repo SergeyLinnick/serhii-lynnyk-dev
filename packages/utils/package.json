@@ -1,11 +1,6 @@
 {
   "name": "@workspace/utils",
   "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "check-types": "tsc --noEmit",
-    "lint": "eslint . --max-warnings 0"
-  },
   "dependencies": {
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -20,6 +15,11 @@
   },
   "exports": {
     ".": "./src/index.ts"
+  },
+  "private": true,
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0"
   },
   "type": "module"
 }

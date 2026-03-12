@@ -1,11 +1,6 @@
 {
   "name": "@workspace/models",
   "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "check-types": "tsc --noEmit",
-    "lint": "eslint . --max-warnings 0"
-  },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
     "@workspace/utils": "workspace:*",
@@ -21,6 +16,11 @@
   },
   "exports": {
     ".": "./index.ts"
+  },
+  "private": true,
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0"
   },
   "type": "module"
 }
