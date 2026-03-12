@@ -33,7 +33,7 @@ interface ContainerProps extends ComponentPropsWithoutRef<"div"> {
 export function Container({ className, component = "div", children, wrapperClassName, ...props }: ContainerProps) {
 	return (
 		<ContainerOuter component={component} className={wrapperClassName} {...props}>
-			<ContainerInner className={cn(className, "px-safe")}>{children}</ContainerInner>
+			<ContainerInner className={cn(className, "px-safe px-4")}>{children}</ContainerInner>
 		</ContainerOuter>
 	);
 }
