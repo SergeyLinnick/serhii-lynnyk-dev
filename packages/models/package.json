@@ -1,14 +1,11 @@
 {
   "name": "@workspace/models",
   "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "check-types": "tsc --noEmit",
-    "lint": "eslint . --max-warnings 0"
-  },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
+    "@workspace/db": "workspace:*",
     "@workspace/utils": "workspace:*",
+    "drizzle-zod": "^0.8.3",
     "react-hook-form": "^7.62.0",
     "zod": "^4.1.4"
   },
@@ -21,6 +18,11 @@
   },
   "exports": {
     ".": "./index.ts"
+  },
+  "private": true,
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0"
   },
   "type": "module"
 }

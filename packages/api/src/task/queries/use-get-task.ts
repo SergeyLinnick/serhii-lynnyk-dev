@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { mapTaskViewFromApi } from "../mappers";
+import type { TaskViewType } from "@workspace/models";
 import { taskDetailQueryOptions } from "./task-query-options";
 
-export function useGetTask(id: string) {
+export function useGetTask(id: string, initialData?: TaskViewType | null) {
 	return useQuery({
 		...taskDetailQueryOptions(id),
-		select: mapTaskViewFromApi,
+		initialData: initialData ?? undefined,
 	});
 }

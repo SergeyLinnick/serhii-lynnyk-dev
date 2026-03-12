@@ -2,7 +2,6 @@
 
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { isAppError } from "@workspace/models";
 import { toast } from "@workspace/ui";
 import { useState, type ReactNode } from "react";
 
@@ -12,7 +11,7 @@ function makeQueryClient() {
 			queries: {
 				staleTime: 60 * 1000,
 				retry: (failureCount, error) => {
-					if (isAppError(error)) return false;
+					if (error instanceof Error && error.message === "Unauthorized") return false;
 					return failureCount < 3;
 				},
 			},

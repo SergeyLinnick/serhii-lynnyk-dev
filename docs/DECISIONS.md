@@ -85,20 +85,80 @@ Use Tailwind CSS v4 with the `@theme` inline directive for design token configur
 
 ---
 
-## 5. In-memory mock for starter
+## 5. Drizzle ORM
 
 ### Context
 
-The starter template needs to be self-contained and runnable without any external backend service or database. However, the API layer should be structured so that connecting a real backend later is straightforward.
+The project needed a database ORM for PostgreSQL. Options considered: Prisma, Drizzle ORM, and raw SQL with pg.
 
 ### Decision
 
-Use an in-memory mock implementation in the `api` package's services layer. When a real backend is available, swap the mock services to use `ky` (or `fetch`) for actual HTTP calls.
+Use Drizzle ORM for all database operations.
 
 ### Rationale
 
-- Self-contained: `pnpm dev` works immediately without configuring a backend, database, or Docker.
-- The services layer is the only place that needs to change -- contracts, mappers, and query hooks remain untouched.
-- Developers can build and test full features (CRUD flows, optimistic updates, error states) against realistic mock data.
-- The architectural boundary between services and the rest of the API package is enforced from day one, making the eventual swap trivial.
-- `ky` is the recommended HTTP client for production use due to its clean API, retry support, and built-in hooks.
+- SQL-like API — queries read like SQL, reducing the learning curve for developers familiar with SQL.
+- Zero runtime overhead — Drizzle compiles to raw SQL with no query engine.
+- Schema-as-code — table definitions in TypeScript serve as both schema and type source.
+- `drizzle-zod` integration bridges table definitions to Zod schemas, eliminating manual type duplication.
+- Excellent migration tooling via `drizzle-kit` (generate, push, studio).
+- Lightweight — no heavy runtime like Prisma Client.
+
+---
+
+## 6. Neon Postgres over Vercel Postgres
+
+### Context
+
+`@vercel/postgres` was deprecated in late 2024 when Vercel moved to a marketplace model. It was always a thin wrapper around Neon's serverless driver. The package is now archived and no longer maintained.
+
+### Decision
+
+Use `@neondatabase/serverless` with the `drizzle-orm/neon-http` adapter. Rename the env var from `POSTGRES_URL` to `DATABASE_URL` to follow Neon conventions.
+
+### Rationale
+
+- Direct access to Neon's full feature set (branching, autoscaling, instant restore).
+- HTTP transport (`neon-http`) is ideal for serverless/Server Actions — no WebSocket polyfill needed.
+- Actively maintained vs archived package.
+- `DATABASE_URL` is the Neon marketplace convention and more portable across providers.
+- No schema or query code changes required — Drizzle ORM abstracts the driver.
+
+---
+
+## 7. Server Actions over HTTP Services
+
+### Context
+
+The previous architecture used an HTTP client (`ky`) with contracts, services, and mappers to communicate with a backend. With the database now accessible directly from the Next.js server, an HTTP layer is unnecessary overhead.
+
+### Decision
+
+Replace HTTP services with Next.js Server Actions that call Drizzle directly. Keep TanStack Query hooks for client-side caching and invalidation.
+
+### Rationale
+
+- Eliminates an entire architectural layer (contracts, services, mappers, HTTP client).
+- No serialization overhead — Server Actions pass data directly between server and client.
+- Type safety end-to-end — Drizzle return types flow through to TanStack Query hooks without manual mapping.
+- Authentication is handled via `getAuthenticatedSession()` in each action, keeping security co-located with data access.
+- SSR data is fetched by calling Server Actions directly in page Server Components, passed as `initialData` to client views.
+
+---
+
+## 8. proxy.ts over middleware.ts
+
+### Context
+
+Next.js 16 deprecated `middleware.ts` in favor of `proxy.ts`. A critical CVE (CVE-2025-29927) in March 2025 exposed that middleware-based auth is architecturally fragile. The rename clarifies that the file acts as a network proxy, not application middleware.
+
+### Decision
+
+Use `proxy.ts` for lightweight cookie checks only. Real auth verification happens in Server Actions via `getAuthenticatedSession()`.
+
+### Rationale
+
+- Aligns with Next.js 16 file convention (`proxy.ts` replaces `middleware.ts`).
+- Proxy handles optimistic redirects; Server Actions handle real authorization at the data access point.
+- Uses `getSessionCookie` from `better-auth/cookies` for a lightweight, non-blocking check.
+- Proxy runs on Node.js runtime (not Edge), matching the project's deployment model.

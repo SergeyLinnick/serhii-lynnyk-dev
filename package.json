@@ -1,17 +1,6 @@
 {
   "name": "starter-monorepo",
   "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "build": "turbo build",
-    "check-types": "turbo check-types",
-    "dev": "turbo dev",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "lint": "turbo lint",
-    "postinstall": "pnpm syncpack list-mismatches && pnpm syncpack format",
-    "syncpack-check": "pnpm syncpack list-mismatches",
-    "test": "turbo run test"
-  },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
     "@workspace/eslint-config": "workspace:*",
@@ -32,5 +21,16 @@
       "esbuild",
       "sharp"
     ]
+  },
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev": "turbo dev",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "turbo lint",
+    "postinstall": "pnpm syncpack list-mismatches && pnpm syncpack format",
+    "syncpack-check": "pnpm syncpack list-mismatches",
+    "test": "turbo run test"
   }
 }

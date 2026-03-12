@@ -1,6 +1,6 @@
 # Auth Package
 
-The `@repo/auth` package provides authentication using [better-auth](https://www.better-auth.com/). It exposes server configuration, client hooks, and middleware helpers that apps consume.
+The `@workspace/auth` package provides authentication using [better-auth](https://www.better-auth.com/) with a Drizzle database adapter. It exposes server configuration, client hooks, and proxy helpers that apps consume.
 
 ## Structure
 
@@ -8,7 +8,7 @@ The `@repo/auth` package provides authentication using [better-auth](https://www
 packages/auth/src/
 ├── server.ts                   # better-auth server configuration
 ├── client.ts                   # Client-side auth hooks
-├── middleware.ts               # Middleware helper for route protection
+├── auth-proxy.ts               # Proxy helper for route protection
 └── index.ts                    # Public barrel export
 ```
 
@@ -20,23 +20,24 @@ The server config initializes better-auth with email and password authentication
 // server.ts
 
 import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+export { toNextJsHandler } from "better-auth/next-js";
+
+import { db } from "@workspace/db";
 
 export const auth = betterAuth({
+	database: drizzleAdapter(db, { provider: "pg" }),
 	emailAndPassword: {
 		enabled: true,
 	},
-	// Add database adapter when ready:
-	// database: drizzle(db),
-	//
-	// Add social providers as needed:
-	// socialProviders: {
-	//   google: {
-	//     clientId: process.env.GOOGLE_CLIENT_ID!,
-	//     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-	//   },
-	// },
+	session: {
+		expiresIn: 60 * 60 * 24 * 7, // 7 days
+		updateAge: 60 * 60 * 24, // 1 day
+	},
 });
 ```
+
+The auth schema tables (user, session, account, verification) are defined in `@workspace/db/schema/auth.ts` and managed via Drizzle migrations.
 
 ## Client Hooks (client.ts)
 
@@ -134,23 +135,31 @@ export function SignUpForm() {
 }
 ```
 
-## Middleware Helper (middleware.ts)
+## Proxy Helper (auth-proxy.ts)
 
-The middleware helper checks for a valid session cookie and redirects unauthenticated users.
+The proxy helper uses `getSessionCookie` from `better-auth/cookies` for a lightweight cookie check and redirects unauthenticated users. This is an optimistic redirect — real auth verification happens in Server Actions via `getAuthenticatedSession()`.
 
 ```ts
-// middleware.ts
+// auth-proxy.ts
 
+import { getSessionCookie } from "better-auth/cookies";
+import { PAGE_URLS, PUBLIC_ROUTES } from "@workspace/models";
 import { type NextRequest, NextResponse } from "next/server";
-import { auth } from "./server";
 
-export async function authMiddleware(request: NextRequest) {
-	const session = await auth.api.getSession({
-		headers: request.headers,
-	});
+export function authProxy(request: NextRequest): NextResponse {
+	const { pathname } = request.nextUrl;
 
-	if (!session) {
-		return NextResponse.redirect(new URL("/sign-in", request.url));
+	const isPublicRoute = PUBLIC_ROUTES.some(route => pathname.startsWith(route));
+	if (isPublicRoute) {
+		return NextResponse.next();
+	}
+
+	const sessionCookie = getSessionCookie(request);
+
+	if (!sessionCookie) {
+		const loginUrl = new URL(PAGE_URLS.LOGIN, request.url);
+		loginUrl.searchParams.set("callbackUrl", pathname);
+		return NextResponse.redirect(loginUrl);
 	}
 
 	return NextResponse.next();
@@ -174,32 +183,22 @@ export const { GET, POST } = toNextJsHandler(auth);
 
 This single catch-all route handles all authentication endpoints (sign-in, sign-up, sign-out, session, etc.).
 
-### 2. Add the Middleware
+### 2. Add the Proxy
 
-Create or update `middleware.ts` at the app root:
+Create or update `proxy.ts` at the app root. The proxy runs on Node.js runtime and delegates to the `authProxy` helper for lightweight cookie checks:
 
 ```ts
-// apps/web/middleware.ts
+// apps/web/proxy.ts
 
-import { authMiddleware } from "@repo/auth";
-import { type NextRequest } from "next/server";
+import { authProxy } from "@workspace/auth/auth-proxy";
+import type { NextRequest } from "next/server";
 
-const protectedRoutes = ["/dashboard", "/orders", "/settings"];
-const authRoutes = ["/sign-in", "/sign-up"];
-
-export async function middleware(request: NextRequest) {
-	const { pathname } = request.nextUrl;
-
-	// Check if the route is protected
-	const isProtected = protectedRoutes.some(route => pathname.startsWith(route));
-
-	if (isProtected) {
-		return authMiddleware(request);
-	}
+export function proxy(request: NextRequest) {
+	return authProxy(request);
 }
 
 export const config = {
-	matcher: ["/dashboard/:path*", "/orders/:path*", "/settings/:path*"],
+	matcher: ["/((?!_next/static|_next/image|favicon.ico|api/auth).*)"],
 };
 ```
 

@@ -1,7 +1,6 @@
 {
   "name": "@workspace/eslint-config",
   "version": "0.0.1",
-  "private": true,
   "devDependencies": {
     "@eslint/js": "^9.35.0",
     "@next/eslint-plugin-next": "^16.0.0",
@@ -21,5 +20,6 @@
     "./next-js": "./next.js",
     "./react-internal": "./react-internal.js"
   },
+  "private": true,
   "type": "module"
 }

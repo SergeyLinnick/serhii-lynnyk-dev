@@ -1,16 +1,16 @@
 import { queryOptions } from "@tanstack/react-query";
 import { queryKeys } from "../../_common/query-keys";
-import { getTask, getTasks } from "../services";
+import { getTaskAction, getTasksAction } from "../actions";
 
 export const taskListQueryOptions = queryOptions({
-	queryKey: queryKeys.tasks.all,
-	queryFn: getTasks,
+	queryKey: queryKeys.tasks.list(),
+	queryFn: getTasksAction,
 });
 
 export function taskDetailQueryOptions(id: string) {
 	return queryOptions({
 		queryKey: queryKeys.tasks.detail(id),
-		queryFn: () => getTask(id),
+		queryFn: () => getTaskAction(id),
 		enabled: !!id,
 	});
 }

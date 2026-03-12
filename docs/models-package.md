@@ -1,6 +1,6 @@
 # Models Package
 
-The `@repo/models` package is the single source of truth for all domain schemas, types, constants, and navigation definitions. It has **no UI, no API calls, and no React dependencies**.
+The `@workspace/models` package is the single source of truth for all domain schemas, types, constants, and navigation definitions. It has **no UI, no API calls, and no React dependencies**. Domain schemas are derived from Drizzle table definitions using `drizzle-zod`.
 
 ## Structure
 
@@ -25,43 +25,35 @@ packages/models/src/
 1. **No UI.** This package must not import React or any UI library.
 2. **No API calls.** This package must not import fetch, ky, axios, or any HTTP client.
 3. **No React.** No hooks, no components, no JSX.
-4. **Zod schemas are the source of truth.** Types are always inferred from schemas using `z.infer`.
+4. **Drizzle tables are the source of truth.** Domain schemas are derived from `@workspace/db/schema` using `drizzle-zod`. Types are inferred from schemas using `z.infer`.
 5. **One schema file, one types file per domain.**
 
 ## Zod Schemas (schema.ts)
 
-Schemas define the shape and validation rules for domain data using Zod v4.
+Schemas are derived from Drizzle table definitions using `drizzle-zod`, with form-level validation overrides:
 
 ```ts
-// orders/schema.ts
+// task/schema.ts
 
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
+import { task } from "@workspace/db/schema";
 
-export const orderSchema = z.object({
-	id: z.string().uuid(),
-	orderName: z.string().min(1, "Order name is required"),
-	createdAt: z.date(),
-	updatedAt: z.date(),
-	totalAmount: z.number().nonnegative(),
-	status: z.enum(["draft", "pending", "confirmed", "shipped", "delivered"]),
-	lineItems: z.array(z.lazy(() => lineItemSchema)),
-});
+// View schema — inferred from DB table (all columns)
+export const TaskViewSchema = createSelectSchema(task);
 
-export const orderCreateSchema = orderSchema.omit({
-	id: true,
-	createdAt: true,
-	updatedAt: true,
-});
-
-export const orderUpdateSchema = orderCreateSchema.partial();
-
-export const lineItemSchema = z.object({
-	id: z.string().uuid(),
-	productName: z.string().min(1),
-	quantity: z.number().int().positive(),
-	unitPrice: z.number().nonnegative(),
-});
+// Form schema — insert schema with validation overrides, omitting server-managed fields
+export const TaskFormSchema = createInsertSchema(task, {
+	title: z.string().min(1, "Title is required").max(255, "Title must be at most 255 characters"),
+	description: z.string().max(2000, "Description must be at most 2000 characters").optional(),
+}).omit({ id: true, createdAt: true, updatedAt: true, userId: true });
 ```
+
+**Key patterns:**
+
+- `createSelectSchema(table)` — generates a Zod schema matching all columns (for view/display types)
+- `createInsertSchema(table, overrides)` — generates a Zod schema for inserts, with optional field-level validation overrides
+- `.omit(...)` — removes server-managed fields (id, timestamps, userId) from form schemas
 
 ## Inferred Types (types.ts)
 
@@ -169,10 +161,17 @@ export class NotFoundError extends AppError {
 }
 ```
 
+## Dependencies
+
+- `@workspace/db` — Drizzle table definitions used as schema source
+- `drizzle-zod` — Bridges Drizzle tables to Zod schemas
+- `zod` — Runtime validation
+
 ## Adding a New Domain
 
-1. Create `packages/models/src/<domain>/` directory.
-2. Add `schema.ts` with Zod v4 schemas.
-3. Add `types.ts` with inferred types (`z.infer<typeof schema>`).
-4. Export from `index.ts`.
-5. Never write manual TypeScript interfaces when a Zod schema exists.
+1. Ensure the Drizzle table exists in `@workspace/db/schema`.
+2. Create `packages/models/src/<domain>/` directory.
+3. Add `schema.ts` using `createSelectSchema` and `createInsertSchema` from `drizzle-zod`.
+4. Add `types.ts` with inferred types (`z.infer<typeof schema>`).
+5. Export from `index.ts`.
+6. Never write manual TypeScript interfaces when a Zod schema exists.

@@ -9,8 +9,12 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { taskColumns } from "./blocks/task-columns";
 
-export function TasksListView() {
-	const { data: tasks, isLoading } = useGetTasks();
+interface TasksListViewProps {
+	initialData?: TaskViewType[];
+}
+
+export function TasksListView({ initialData }: TasksListViewProps) {
+	const { data: tasks, isLoading } = useGetTasks(initialData);
 
 	const table = useReactTable<TaskViewType>({
 		data: tasks ?? [],
