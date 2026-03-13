@@ -1,9 +1,11 @@
 import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 export { toNextJsHandler } from "better-auth/next-js";
 
-// Configure your database adapter here when ready.
-// Example with Drizzle: import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "@workspace/db";
+
 export const auth = betterAuth({
+	database: drizzleAdapter(db, { provider: "pg" }),
 	emailAndPassword: {
 		enabled: true,
 	},

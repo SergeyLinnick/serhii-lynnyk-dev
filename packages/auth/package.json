@@ -2,8 +2,11 @@
   "name": "@workspace/auth",
   "version": "0.0.1",
   "dependencies": {
+    "@better-auth/drizzle-adapter": "1.5.3",
+    "@workspace/db": "workspace:*",
     "@workspace/utils": "workspace:*",
-    "better-auth": "latest"
+    "better-auth": "^1.5.3",
+    "drizzle-orm": "^0.45.1"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
@@ -19,7 +22,16 @@
     ".": "./src/index.ts",
     "./client": "./src/client.ts",
     "./server": "./src/server.ts",
-    "./middleware": "./src/middleware.ts"
+    "./auth-proxy": "./src/auth-proxy.ts"
+  },
+  "peerDependencies": {
+    "next": "^16.0.0",
+    "react": "^19.2.0"
+  },
+  "private": true,
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0"
   },
   "peerDependencies": {
     "next": "^16.0.0",

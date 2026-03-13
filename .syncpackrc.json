@@ -1,0 +1,10 @@
+{
+	"versionGroups": [
+		{
+			"label": "Local workspace packages use workspace:*",
+			"dependencies": ["@workspace/**"],
+			"dependencyTypes": ["dev", "prod", "peer"],
+			"pinVersion": "workspace:*"
+		}
+	]
+}

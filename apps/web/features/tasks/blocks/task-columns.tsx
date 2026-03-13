@@ -9,12 +9,7 @@ const statusConfig: Record<string, { label: string; className: string }> = {
 	todo: { label: "To Do", className: "bg-muted text-muted-foreground" },
 	in_progress: { label: "In Progress", className: "bg-blue-100 text-blue-800" },
 	done: { label: "Done", className: "bg-green-100 text-green-800" },
-};
-
-const priorityConfig: Record<string, { label: string; className: string }> = {
-	low: { label: "Low", className: "bg-muted text-muted-foreground" },
-	medium: { label: "Medium", className: "bg-yellow-100 text-yellow-800" },
-	high: { label: "High", className: "bg-red-100 text-red-800" },
+	cancelled: { label: "Cancelled", className: "bg-gray-100 text-gray-800" },
 };
 
 export const taskColumns: ColumnDef<TaskViewType>[] = [
@@ -32,19 +27,6 @@ export const taskColumns: ColumnDef<TaskViewType>[] = [
 			return (
 				<span className={cn("inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium", config?.className)}>
 					{config?.label ?? status}
-				</span>
-			);
-		},
-	},
-	{
-		accessorKey: "priority",
-		header: "Priority",
-		cell: ({ row }) => {
-			const priority = row.getValue("priority") as string;
-			const config = priorityConfig[priority];
-			return (
-				<span className={cn("inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium", config?.className)}>
-					{config?.label ?? priority}
 				</span>
 			);
 		},

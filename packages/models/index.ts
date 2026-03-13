@@ -4,5 +4,5 @@ export { customErrorMap } from "./error-map";
 export { ApplicationError, AuthenticationError, ERROR_CODES, createAppError, isAppError } from "./errors";
 export type { AppError } from "./errors";
 export { PAGE_URLS, PUBLIC_ROUTES } from "./navigation/constants";
-export { TaskFormSchema, TaskViewSchema } from "./task/schema";
-export type { TaskFormType, TaskViewType } from "./task/types";
+export { TaskFormSchema, TaskUpdateSchema, TaskViewSchema } from "./task/schema";
+export type { TaskFormType, TaskUpdateType, TaskViewType } from "./task/types";

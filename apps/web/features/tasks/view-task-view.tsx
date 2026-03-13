@@ -1,6 +1,7 @@
 "use client";
 
 import { useDeleteTask, useGetTask } from "@workspace/api";
+import type { TaskViewType } from "@workspace/models";
 import { PAGE_URLS } from "@workspace/models";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@workspace/ui";
 import { formatDate } from "@workspace/utils";
@@ -8,9 +9,14 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export function ViewTaskView({ id }: { id: string }) {
+interface ViewTaskViewProps {
+	id: string;
+	initialData?: TaskViewType | null;
+}
+
+export function ViewTaskView({ id, initialData }: ViewTaskViewProps) {
 	const router = useRouter();
-	const { data: task, isLoading } = useGetTask(id);
+	const { data: task, isLoading } = useGetTask(id, initialData);
 	const deleteTask = useDeleteTask();
 
 	function handleDelete() {
@@ -38,12 +44,7 @@ export function ViewTaskView({ id }: { id: string }) {
 		todo: "To Do",
 		in_progress: "In Progress",
 		done: "Done",
-	};
-
-	const priorityLabel: Record<string, string> = {
-		low: "Low",
-		medium: "Medium",
-		high: "High",
+		cancelled: "Cancelled",
 	};
 
 	return (
@@ -69,10 +70,6 @@ export function ViewTaskView({ id }: { id: string }) {
 						<div>
 							<p className="text-sm font-medium text-muted-foreground">Status</p>
 							<p>{statusLabel[task.status] ?? task.status}</p>
-						</div>
-						<div>
-							<p className="text-sm font-medium text-muted-foreground">Priority</p>
-							<p>{priorityLabel[task.priority] ?? task.priority}</p>
 						</div>
 						<div>
 							<p className="text-sm font-medium text-muted-foreground">Created</p>

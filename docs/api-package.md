@@ -1,129 +1,94 @@
 # API Package
 
-The `@repo/api` package provides the data-fetching layer for all apps. It encapsulates HTTP calls, response mapping, and TanStack Query hooks behind a clean domain-oriented API.
+The `@workspace/api` package provides the data layer for all apps. It encapsulates Server Actions (database operations), auth helpers, and TanStack Query hooks behind a clean domain-oriented API.
 
 ## Structure
 
 ```
 packages/api/src/
 ├── _common/                    # Shared API infrastructure
-│   ├── client.ts               # HTTP client (ky or fetch wrapper)
-│   ├── constants.ts            # Base URL, default headers, timeouts
-│   ├── query-keys.ts           # Centralized query key factory
-│   └── utils.ts                # Shared helpers (error handling, etc.)
+│   ├── auth.ts                 # Server Action auth helper (getAuthenticatedSession)
+│   └── query-keys.ts           # Centralized query key factory
 ├── context/                    # React context and providers
-│   ├── api-provider.tsx        # QueryClientProvider wrapper
-│   └── hydration-boundary.tsx  # HydrationBoundary for SSR prefetch
-├── orders/                     # Example domain module
-│   ├── contracts.ts            # API payload types (snake_case)
-│   ├── services.ts             # HTTP calls or in-memory mock
-│   ├── mappers.ts              # snake_case <-> camelCase transforms
+│   └── api-provider.tsx        # QueryClientProvider wrapper
+├── <domain>/                   # Domain-specific API modules
+│   ├── actions.ts              # Server Actions (database operations)
 │   └── queries/                # TanStack Query hooks
-│       ├── use-get-orders.ts
-│       ├── use-get-order.ts
-│       ├── use-create-order.ts
-│       ├── use-update-order.ts
-│       └── use-delete-order.ts
-├── <domain>/                   # Additional domain modules follow same pattern
-│   └── ...
+│       ├── <domain>-query-options.ts
+│       ├── use-get-<domain>s.ts
+│       ├── use-get-<domain>.ts
+│       ├── use-create-<domain>.ts
+│       ├── use-update-<domain>.ts
+│       └── use-delete-<domain>.ts
 └── index.ts                    # Public barrel export
 ```
 
 ## Domain Module Anatomy
 
-### contracts.ts -- API Payload Types
+### actions.ts -- Server Actions
 
-Contracts define the shape of data as it comes from or goes to the API. These use **snake_case** to match typical backend conventions.
+Server Actions are `"use server"` functions that run on the server. They handle authentication, database operations, and return data directly — no HTTP layer needed.
 
 ```ts
-// orders/contracts.ts
+// task/actions.ts
+"use server";
 
-export interface OrderResponse {
-	id: string;
-	order_name: string;
-	created_at: string;
-	updated_at: string;
-	total_amount: number;
-	line_items: LineItemResponse[];
+import { db } from "@workspace/db";
+import { task } from "@workspace/db/schema";
+import { eq, and } from "drizzle-orm";
+import type { TaskFormType } from "@workspace/models";
+import { getAuthenticatedSession } from "../_common/auth";
+
+export async function getTasksAction() {
+	const session = await getAuthenticatedSession();
+	return db.select().from(task)
+		.where(eq(task.userId, session.user.id))
+		.orderBy(task.createdAt);
 }
 
-export interface OrderCreatePayload {
-	order_name: string;
-	line_items: LineItemCreatePayload[];
-}
-
-export interface OrderUpdatePayload {
-	order_name?: string;
-	line_items?: LineItemCreatePayload[];
+export async function createTaskAction(data: TaskFormType) {
+	const session = await getAuthenticatedSession();
+	const [result] = await db.insert(task)
+		.values({ ...data, userId: session.user.id })
+		.returning();
+	return result;
 }
 ```
 
-### services.ts -- HTTP Calls
+**Rules for Server Actions:**
 
-Services make the actual HTTP calls (or return mock data for the starter). They accept and return contract types.
+1. Always start with `"use server"` directive.
+2. Always call `getAuthenticatedSession()` first.
+3. Always filter by `userId` — never expose data across users.
+4. Throw errors on failure (mutations catch in hooks, queries propagate to error boundaries).
 
-```ts
-// orders/services.ts
+### Auth Helper
 
-import { client } from "../_common/client";
-import type { OrderResponse, OrderCreatePayload, OrderUpdatePayload } from "./contracts";
-
-export async function getOrders(): Promise<OrderResponse[]> {
-	return client.get("orders").json();
-}
-
-export async function getOrder(id: string): Promise<OrderResponse> {
-	return client.get(`orders/${id}`).json();
-}
-
-export async function createOrder(payload: OrderCreatePayload): Promise<OrderResponse> {
-	return client.post("orders", { json: payload }).json();
-}
-
-export async function updateOrder(id: string, payload: OrderUpdatePayload): Promise<OrderResponse> {
-	return client.put(`orders/${id}`, { json: payload }).json();
-}
-
-export async function deleteOrder(id: string): Promise<void> {
-	await client.delete(`orders/${id}`);
-}
-```
-
-For the starter template, services use an **in-memory mock** instead of real HTTP calls. Swap to `ky` or `fetch` when a real backend is available.
-
-### mappers.ts -- Data Transformation
-
-Mappers convert between API snake_case contracts and app-level camelCase models.
+The shared auth helper verifies the session for every Server Action:
 
 ```ts
-// orders/mappers.ts
+// _common/auth.ts
+"use server";
 
-import type { Order } from "@repo/models";
-import type { OrderResponse, OrderCreatePayload } from "./contracts";
-import type { OrderCreate } from "@repo/models";
+import { headers } from "next/headers";
+import { auth } from "@workspace/auth/server";
 
-export function mapOrderFromApi(response: OrderResponse): Order {
-	return {
-		id: response.id,
-		orderName: response.order_name,
-		createdAt: new Date(response.created_at),
-		updatedAt: new Date(response.updated_at),
-		totalAmount: response.total_amount,
-		lineItems: response.line_items.map(mapLineItemFromApi),
-	};
-}
+export async function getAuthenticatedSession() {
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
 
-export function mapOrderToApi(data: OrderCreate): OrderCreatePayload {
-	return {
-		order_name: data.orderName,
-		line_items: data.lineItems.map(mapLineItemToApi),
-	};
+	if (!session) {
+		throw new Error("Unauthorized");
+	}
+
+	return session;
 }
 ```
 
 ### queries/ -- TanStack Query Hooks
 
-Query hooks follow a strict naming convention:
+Query hooks wrap Server Actions with TanStack Query for caching, invalidation, and optimistic updates.
 
 | Operation | Hook Name         | TanStack Primitive |
 | --------- | ----------------- | ------------------ |
@@ -133,82 +98,116 @@ Query hooks follow a strict naming convention:
 | Update    | `use-update-*.ts` | `useMutation`      |
 | Delete    | `use-delete-*.ts` | `useMutation`      |
 
+Query options are extracted into a separate file for reuse:
+
 ```ts
-// orders/queries/use-get-orders.ts
+// task/queries/task-query-options.ts
+
+import { queryOptions } from "@tanstack/react-query";
+import { queryKeys } from "../../_common/query-keys";
+import { getTaskAction, getTasksAction } from "../actions";
+
+export const taskListQueryOptions = queryOptions({
+	queryKey: queryKeys.tasks.list(),
+	queryFn: getTasksAction,
+});
+
+export function taskDetailQueryOptions(id: string) {
+	return queryOptions({
+		queryKey: queryKeys.tasks.detail(id),
+		queryFn: () => getTaskAction(id),
+		enabled: !!id,
+	});
+}
+```
+
+Hooks support `initialData` for SSR hydration:
+
+```ts
+// task/queries/use-get-tasks.ts
 
 import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "../../_common/query-keys";
-import { getOrders } from "../services";
-import { mapOrderFromApi } from "../mappers";
+import type { TaskViewType } from "@workspace/models";
+import { taskListQueryOptions } from "./task-query-options";
 
-export function useGetOrders() {
+export function useGetTasks(initialData?: TaskViewType[]) {
 	return useQuery({
-		queryKey: queryKeys.orders.list(),
-		queryFn: async () => {
-			const response = await getOrders();
-			return response.map(mapOrderFromApi);
+		...taskListQueryOptions,
+		initialData,
+	});
+}
+```
+
+Mutation hooks invalidate related queries on success:
+
+```ts
+// task/queries/use-create-task.ts
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { TaskFormType } from "@workspace/models";
+import { toast } from "@workspace/ui";
+import { queryKeys } from "../../_common/query-keys";
+import { createTaskAction } from "../actions";
+
+export function useCreateTask() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: TaskFormType) => createTaskAction(data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all });
+			toast.success("Task created successfully");
 		},
 	});
 }
 ```
 
-```ts
-// orders/queries/use-create-order.ts
+## SSR Data Flow
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "../../_common/query-keys";
-import { createOrder } from "../services";
-import { mapOrderToApi, mapOrderFromApi } from "../mappers";
-import type { OrderCreate } from "@repo/models";
+Pages call Server Actions directly for initial data, then pass it to client views via `initialData`:
 
-export function useCreateOrder() {
-	const queryClient = useQueryClient();
+```tsx
+// app/(private)/tasks/page.tsx (server component)
+import { getTasksAction } from "@workspace/api";
+import { TasksListView } from "@/features/tasks";
 
-	return useMutation({
-		mutationFn: async (data: OrderCreate) => {
-			const payload = mapOrderToApi(data);
-			const response = await createOrder(payload);
-			return mapOrderFromApi(response);
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: queryKeys.orders.list(),
-			});
-		},
-	});
+export default async function TasksPage() {
+	const tasks = await getTasksAction();
+	return <TasksListView initialData={tasks} />;
+}
+```
+
+```tsx
+// features/tasks/tasks-list-view.tsx (client component)
+"use client";
+
+import { useGetTasks } from "@workspace/api";
+
+export function TasksListView({ initialData }: { initialData?: TaskViewType[] }) {
+	const { data: tasks } = useGetTasks(initialData);
+	// render with tasks...
 }
 ```
 
 ## Centralized Query Keys
 
-All query keys are managed through a single factory in `_common/query-keys.ts`. This prevents key collisions and makes invalidation predictable.
+All query keys are managed through a single factory in `_common/query-keys.ts`:
 
 ```ts
-// _common/query-keys.ts
-
 export const queryKeys = {
-	orders: {
-		all: () => ["orders"] as const,
-		list: (filters?: Record<string, unknown>) => [...queryKeys.orders.all(), "list", filters] as const,
-		detail: (id: string) => [...queryKeys.orders.all(), "detail", id] as const,
+	tasks: {
+		all: ["tasks"] as const,
+		list: (filters?: Record<string, unknown>) => [...queryKeys.tasks.all, "list", filters] as const,
+		detail: (id: string) => [...queryKeys.tasks.all, "detail", id] as const,
 	},
-	// Add more domains here following the same pattern
-	// products: {
-	//   all: () => ["products"] as const,
-	//   list: (filters?: Record<string, unknown>) =>
-	//     [...queryKeys.products.all(), "list", filters] as const,
-	//   detail: (id: string) =>
-	//     [...queryKeys.products.all(), "detail", id] as const,
-	// },
 };
 ```
 
 ## Context -- ApiProvider
 
-The `ApiProvider` wraps the app with `QueryClientProvider` and sets default query options.
+The `ApiProvider` wraps the app with `QueryClientProvider` and sets default query options:
 
 ```tsx
-// context/api-provider.tsx
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -221,7 +220,10 @@ export function ApiProvider({ children }: { children: ReactNode }) {
 				defaultOptions: {
 					queries: {
 						staleTime: 60 * 1000,
-						retry: 1,
+						retry: (failureCount, error) => {
+							if (error instanceof Error && error.message === "Unauthorized") return false;
+							return failureCount < 1;
+						},
 					},
 				},
 			}),
@@ -231,23 +233,10 @@ export function ApiProvider({ children }: { children: ReactNode }) {
 }
 ```
 
-## Context -- HydrationBoundary
-
-Used to prefetch queries on the server and hydrate them on the client.
-
-```tsx
-// context/hydration-boundary.tsx
-"use client";
-
-export { HydrationBoundary } from "@tanstack/react-query";
-```
-
 ## Adding a New Domain
 
 1. Create `packages/api/src/<domain>/` directory.
-2. Add `contracts.ts` with API payload types (snake_case).
-3. Add `services.ts` with HTTP calls or mock implementations.
-4. Add `mappers.ts` with bidirectional mapping functions.
-5. Create `queries/` directory with TanStack Query hooks.
-6. Register query keys in `_common/query-keys.ts`.
-7. Export the public API from `index.ts`.
+2. Add `actions.ts` with Server Actions (always authenticate, filter by userId).
+3. Create `queries/` directory with query options and TanStack Query hooks.
+4. Register query keys in `_common/query-keys.ts`.
+5. Export the public API from `index.ts`.

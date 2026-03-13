@@ -6,33 +6,39 @@ A production-ready monorepo template built with modern web technologies.
 
 ```
                         +-------------------+
-                        |    Level 6: Apps   |
+                        |   Level 7: Apps    |
                         |  apps/web          |
                         |  apps/admin        |
                         +--------+----------+
                                  |
                         +--------v----------+
-                        |   Level 5: api     |
-                        | (HTTP, queries,    |
-                        |  services, mappers)|
+                        |   Level 6: api     |
+                        | (Server Actions,   |
+                        |  TanStack Query)   |
                         +--------+----------+
                                  |
                         +--------v----------+
-                        |   Level 4: ui      |
+                        |   Level 5: ui      |
                         | (components,       |
                         |  Storybook)        |
                         +--------+----------+
                                  |
                         +--------v----------+
-                        |   Level 3: auth    |
-                        | (better-auth,      |
-                        |  middleware)        |
+                        |   Level 4: auth    |
+                        | (better-auth +     |
+                        |  Drizzle adapter)  |
                         +--------+----------+
                                  |
                         +--------v----------+
-                        |  Level 2: models   |
-                        | (Zod schemas,      |
+                        |  Level 3: models   |
+                        | (drizzle-zod,      |
                         |  types, constants) |
+                        +--------+----------+
+                                 |
+                        +--------v----------+
+                        |   Level 2: db      |
+                        | (Drizzle ORM,      |
+                        |  Neon Postgres)    |
                         +--------+----------+
                                  |
                         +--------v----------+
@@ -54,18 +60,19 @@ Dependencies flow **downward only**. A package may depend on packages at its own
 
 ## Packages
 
-| Package             | Level | Path                         | Purpose                                        |
-| ------------------- | ----- | ---------------------------- | ---------------------------------------------- |
-| `typescript-config` | 0     | `packages/typescript-config` | Shared `tsconfig.json` bases                   |
-| `eslint-config`     | 0     | `packages/eslint-config`     | Shared ESLint flat config presets              |
-| `prettier-config`   | 0     | `packages/prettier-config`   | Shared Prettier configuration                  |
-| `utils`             | 1     | `packages/utils`             | Pure utility functions (cn, formatDate, etc.)  |
-| `models`            | 2     | `packages/models`            | Zod schemas, inferred types, constants         |
-| `auth`              | 3     | `packages/auth`              | Authentication (better-auth) server and client |
-| `ui`                | 4     | `packages/ui`                | Shared UI components (shadcn/ui, Radix, CVA)   |
-| `api`               | 5     | `packages/api`               | API layer (services, mappers, TanStack Query)  |
-| `web`               | 6     | `apps/web`                   | Main Next.js application                       |
-| `admin`             | 6     | `apps/admin`                 | Admin Next.js application                      |
+| Package             | Level | Path                         | Purpose                                         |
+| ------------------- | ----- | ---------------------------- | ----------------------------------------------- |
+| `typescript-config` | 0     | `packages/typescript-config` | Shared `tsconfig.json` bases                    |
+| `eslint-config`     | 0     | `packages/eslint-config`     | Shared ESLint flat config presets               |
+| `prettier-config`   | 0     | `packages/prettier-config`   | Shared Prettier configuration                   |
+| `utils`             | 1     | `packages/utils`             | Pure utility functions (cn, formatDate, etc.)   |
+| `db`                | 2     | `packages/db`                | Drizzle ORM, Neon Postgres, schema & migrations |
+| `models`            | 3     | `packages/models`            | drizzle-zod schemas, inferred types, constants  |
+| `auth`              | 4     | `packages/auth`              | Authentication (better-auth + Drizzle adapter)  |
+| `ui`                | 5     | `packages/ui`                | Shared UI components (shadcn/ui, Radix, CVA)    |
+| `api`               | 6     | `packages/api`               | Server Actions, TanStack Query hooks            |
+| `web`               | 7     | `apps/web`                   | Main Next.js application                        |
+| `admin`             | 7     | `apps/admin`                 | Admin Next.js application                       |
 
 ## Tech Stack
 
@@ -75,9 +82,11 @@ Dependencies flow **downward only**. A package may depend on packages at its own
 | UI Library      | React            | 19      |
 | Language        | TypeScript       | 5.9     |
 | Styling         | Tailwind CSS     | 4       |
+| Database ORM    | Drizzle ORM      | 0.45    |
+| Database        | Neon Postgres    | latest  |
 | Data Fetching   | TanStack Query   | 5       |
 | Validation      | Zod              | 4       |
-| Authentication  | better-auth      | latest  |
+| Authentication  | better-auth      | 1.5     |
 | Testing         | Vitest           | latest  |
 | Documentation   | Storybook        | 10      |
 | Package Manager | pnpm (workspace) | latest  |
@@ -142,4 +151,5 @@ Required variables are documented in each app's `.env.example` file.
 - [UI Package](./ui.md)
 - [Utils Package](./utils-package.md)
 - [Best Practices](./BEST_PRACTICES.md)
+- [Database Package](./db-package.md)
 - [Architecture Decisions](./DECISIONS.md)

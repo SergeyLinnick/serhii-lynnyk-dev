@@ -22,7 +22,6 @@ export function TaskForm({ onSubmit, defaultValues, isSubmitting }: TaskFormProp
 			title: "",
 			description: "",
 			status: "todo",
-			priority: "medium",
 			...defaultValues,
 		},
 	});
@@ -46,34 +45,19 @@ export function TaskForm({ onSubmit, defaultValues, isSubmitting }: TaskFormProp
 				{errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
 			</div>
 
-			<div className="grid grid-cols-2 gap-4">
-				<div className="flex flex-col gap-2">
-					<Label htmlFor="status">Status</Label>
-					<select
-						id="status"
-						className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-						{...register("status")}
-					>
-						<option value="todo">To Do</option>
-						<option value="in_progress">In Progress</option>
-						<option value="done">Done</option>
-					</select>
-					{errors.status && <p className="text-sm text-destructive">{errors.status.message}</p>}
-				</div>
-
-				<div className="flex flex-col gap-2">
-					<Label htmlFor="priority">Priority</Label>
-					<select
-						id="priority"
-						className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-						{...register("priority")}
-					>
-						<option value="low">Low</option>
-						<option value="medium">Medium</option>
-						<option value="high">High</option>
-					</select>
-					{errors.priority && <p className="text-sm text-destructive">{errors.priority.message}</p>}
-				</div>
+			<div className="flex flex-col gap-2">
+				<Label htmlFor="status">Status</Label>
+				<select
+					id="status"
+					className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+					{...register("status")}
+				>
+					<option value="todo">To Do</option>
+					<option value="in_progress">In Progress</option>
+					<option value="done">Done</option>
+					<option value="cancelled">Cancelled</option>
+				</select>
+				{errors.status && <p className="text-sm text-destructive">{errors.status.message}</p>}
 			</div>
 
 			<Button type="submit" disabled={isSubmitting} className="self-start">

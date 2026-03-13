@@ -1,14 +1,13 @@
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const TaskFormSchema = z.object({
+import { task } from "@workspace/db/schema";
+
+export const TaskViewSchema = createSelectSchema(task);
+
+export const TaskFormSchema = createInsertSchema(task, {
 	title: z.string().min(1, "Title is required").max(255, "Title must be at most 255 characters"),
 	description: z.string().max(2000, "Description must be at most 2000 characters").optional(),
-	status: z.enum(["todo", "in_progress", "done"]),
-	priority: z.enum(["low", "medium", "high"]),
-});
+}).omit({ id: true, createdAt: true, updatedAt: true, userId: true });
 
-export const TaskViewSchema = TaskFormSchema.extend({
-	id: z.string().uuid(),
-	createdAt: z.string().datetime(),
-	updatedAt: z.string().datetime().nullable().optional(),
-});
+export const TaskUpdateSchema = TaskFormSchema.partial();
