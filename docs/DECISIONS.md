@@ -162,3 +162,25 @@ Use `proxy.ts` for lightweight cookie checks only. Real auth verification happen
 - Proxy handles optimistic redirects; Server Actions handle real authorization at the data access point.
 - Uses `getSessionCookie` from `better-auth/cookies` for a lightweight, non-blocking check.
 - Proxy runs on Node.js runtime (not Edge), matching the project's deployment model.
+
+---
+
+## 9. Sentry for Error Tracking and Performance Monitoring
+
+### Context
+
+The project needs error tracking, performance monitoring, and session replay to observe production behavior across the Next.js web app. Key contenders were Sentry, Datadog, New Relic, and BetterStack.
+
+### Decision
+
+Use [Sentry](https://sentry.io/) with the `@sentry/nextjs` SDK.
+
+### Rationale
+
+- First-party Next.js SDK with deep integration into App Router, server components, edge middleware, and Turbopack.
+- Single SDK covers client, server, and edge runtimes — no separate packages to maintain.
+- Built-in session replay, distributed tracing, and structured logging.
+- Vercel partnership ensures continued compatibility with Next.js releases.
+- Generous free tier suitable for early-stage projects; transparent pricing at scale.
+- The `/monitoring` tunnel route avoids ad blocker interference without a proxy.
+- Source map uploads via `SENTRY_AUTH_TOKEN` in CI produce readable stack traces in production.
