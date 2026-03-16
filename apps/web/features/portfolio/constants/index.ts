@@ -14,7 +14,7 @@ import type {
 // header
 
 export const BRAND_NAME = "Serhii_Lynnyk";
-export const RESUME_PATH = "/portfolio/SerhiiLynnyk.pdf";
+export const RESUME_PATH = "/portfolio/Serhii_Lynnyk_FE_Engineer.pdf";
 export const RESUME_LABEL = "Download CV";
 
 export const NAV_LINKS: NavLink[] = [
@@ -38,7 +38,7 @@ export const HERO_CONTENT: HeroContent = {
 	headingLines: ["FRONT", "END"],
 	headingAccent: "Engineer",
 	description:
-		"Architecting React/Next.js ecosystems with type-safe contracts, design systems, and monorepo-based platforms. 10+ years of building scalable, maintainable web applications.",
+		"Architecting React/Next.js ecosystems with type-safe contracts, design systems, and monorepo-based platforms — with 10+ years of experience building scalable and maintainable web applications.",
 	ctaLabel: "View experience",
 	ctaHref: "#projects",
 };
@@ -51,11 +51,9 @@ export const STATUS_PANEL_TOP: StatusPanelItem[] = [
 export const STATUS_PANEL_METRICS: StatusPanelItem[] = [
 	{ label: "Years of Experience", value: "10+", progress: 100 },
 	{ label: "FE Stack Coverage", value: "100%", progress: 100 },
-	{ label: "BE Stack Coverage", value: "50%", progress: 50 },
-	{ label: "Tech Stack Items", value: "30+", progress: 90 },
-
-	{ label: "Enterprise Apps Built", value: "04", progress: 85 },
-	{ label: "Languages Spoken", value: "04", progress: 50 },
+	{ label: "Tech Stack Items", value: "30+", progress: 100 },
+	{ label: "Enterprise Apps Built", value: "04", progress: 100 },
+	{ label: "Languages", value: "04", progress: 100 },
 ];
 
 export const STATUS_PANEL_HIGHLIGHT: StatusPanelItem = {
@@ -266,15 +264,37 @@ export const skills: SkillGroup[] = [
 	},
 	{
 		category: "UI & Design",
-		items: ["Tailwind CSS", "Shadcn UI", "Radix UI", "React Aria", "CSS Modules", "styled-components"],
+		items: [
+			"Tailwind CSS",
+			"Shadcn UI",
+			"Radix UI",
+			"React Aria",
+			"CSS Modules",
+			"styled-components",
+			"Web Accessibility (a11y)",
+		],
 	},
 	{
 		category: "Data & State",
-		items: ["TanStack Query", "TanStack Table", "Optimistic Updates", "Caching Strategies"],
+		items: [
+			"TanStack Query",
+			"TanStack Table",
+			"Optimistic Updates",
+			"Caching Strategies",
+			"Pagination & Infinite",
+			"Prefetching & Refetching",
+			"API Integration Patterns",
+		],
 	},
 	{
 		category: "Architecture",
-		items: ["PNPM Workspaces", "Turborepo", "Monorepo Design", "Contract-Driven API Layers"],
+		items: [
+			"Feature-Sliced Design",
+			"PNPM Workspaces",
+			"Turborepo",
+			"Monorepo Design",
+			"Contract-Driven API Layers",
+		],
 	},
 	{
 		category: "Backend & APIs",
@@ -290,32 +310,37 @@ export const skills: SkillGroup[] = [
 
 export const ABOUT_SECTION: SectionContent = {
 	heading: "About_Me",
+	description:
+		"Senior Frontend Engineer with 10+ years of experience building scalable web platforms and complex SaaS products.\n\nFocused on frontend architecture, cross-team delivery, and AI-augmented engineering workflows.",
 };
 
 export const softSkills: SkillGroup[] = [
 	{
-		category: "Collaboration",
+		category: "Ownership",
 		items: [
-			"Cross-functional collaboration with BE, QA, and Product teams",
-			"Coordinating implementation across the entire delivery chain",
+			"Taking ownership of features from product idea to production delivery",
+			"Ensuring technical quality, scalability, and long-term maintainability",
 		],
 	},
 	{
 		category: "Leadership",
 		items: [
-			"Strong ownership mindset — from discovery to production",
-			"Business-to-Architecture Translator — turning requirements into scalable solutions",
+			"Leading implementation across the full product lifecycle — from discovery to production",
+			"Translating business goals into scalable frontend architecture",
 		],
 	},
 	{
-		category: "Mindset",
-		items: ["Adaptable, self-driven, and highly autonomous", "Design & System Thinking"],
+		category: "Collaboration",
+		items: [
+			"Driving cross-functional collaboration across Engineering, QA, and Product",
+			"Aligning technical execution across the full delivery lifecycle",
+		],
 	},
 	{
 		category: "AI Engineering",
 		items: [
-			"AI-augmented engineer — using LLMs as structured productivity tools",
-			"Custom MCP tooling for development acceleration",
+			"AI-augmented engineering workflows integrating LLMs into the development lifecycle",
+			"Building custom MCP tooling to accelerate development and architectural exploration",
 		],
 	},
 ];
@@ -327,7 +352,7 @@ export const EDUCATION: EducationEntry = {
 	school: "Ukrainian National Academy of Railway Transport, Kharkiv, Ukraine",
 };
 
-export const activities: string[] = ["Running", "Football", "Travelling", "Hiking"];
+export const activities: string[] = ["Running", "Football", "Hiking", "Travel"];
 
 // footer
 

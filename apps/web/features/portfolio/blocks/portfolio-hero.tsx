@@ -1,17 +1,12 @@
-import { buttonVariants, Progress } from "@workspace/ui";
+import { buttonVariants } from "@workspace/ui";
 import { cn } from "@workspace/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-	HERO_CONTENT,
-	SOCIAL_LINKS,
-	STATUS_PANEL_HIGHLIGHT,
-	STATUS_PANEL_METRICS,
-	STATUS_PANEL_TOP,
-} from "../constants";
+import { HERO_CONTENT, SOCIAL_LINKS, STATUS_PANEL_HIGHLIGHT, STATUS_PANEL_METRICS, STATUS_PANEL_TOP } from "../constants";
 import { Container } from "./container";
 import { LazyVideo } from "./lazy-video";
+import { StatusPanelMetrics } from "./status-panel-metrics";
 
 export function PortfolioHero() {
 	return (
@@ -111,17 +106,7 @@ export function PortfolioHero() {
 								</span>
 							))}
 						</div>
-						<div className="space-y-5">
-							{STATUS_PANEL_METRICS.map(metric => (
-								<div key={metric.label}>
-									<Progress value={metric.progress ?? 100} className="h-1 rounded-none" />
-									<div className="flex justify-between">
-										<span>{metric.label}</span>
-										<span>{metric.value}</span>
-									</div>
-								</div>
-							))}
-						</div>
+						<StatusPanelMetrics metrics={STATUS_PANEL_METRICS} />
 						<div className="text-right">
 							<span className="block text-4xl font-bold text-foreground">
 								{STATUS_PANEL_HIGHLIGHT.value}

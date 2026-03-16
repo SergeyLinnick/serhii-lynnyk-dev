@@ -7,4 +7,4 @@ export const PAGE_URLS = {
 	TASK_DETAIL: (id: string) => `/tasks/${id}` as const,
 } as const;
 
-export const PUBLIC_ROUTES = ["/auth", "/tasks", "/portfolio"] as const;
+export const PUBLIC_ROUTES = ["/auth", "/tasks", "/portfolio", "/manifest.webmanifest"] as const;

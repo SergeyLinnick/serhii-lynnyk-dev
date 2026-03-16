@@ -37,16 +37,7 @@ export function LazyVideo({ src, poster, className }: LazyVideoProps) {
 	}, [isVisible]);
 
 	return (
-		<video
-			ref={ref}
-			loop
-			muted
-			playsInline
-			preload="none"
-			poster={poster}
-			aria-hidden="true"
-			className={className}
-		>
+		<video ref={ref} loop muted playsInline preload="none" poster={poster} aria-hidden="true" className={className}>
 			{isVisible && <source src={src} type="video/mp4" />}
 		</video>
 	);

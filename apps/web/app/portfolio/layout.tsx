@@ -17,7 +17,12 @@ const jetBrainsMono = JetBrains_Mono({
 export default function PortfolioLayout({ children }: { children: ReactNode }) {
 	return (
 		<div className={`${spaceGrotesk.variable} ${jetBrainsMono.variable} font-body`}>
-			<ThemeProvider attribute="class" defaultTheme="dark" storageKey="portfolio-theme" value={{ light: "light-mode", dark: "dark-mode" }}>
+			<ThemeProvider
+				attribute="class"
+				defaultTheme="dark"
+				storageKey="portfolio-theme"
+				value={{ light: "light-mode", dark: "dark-mode" }}
+			>
 				{children}
 			</ThemeProvider>
 		</div>
