@@ -18,6 +18,7 @@ export function SkillListItem({ text, variant = "default" }: SkillListItemProps)
 
 	const line = (
 		<div
+			aria-hidden="true"
 			className={cn(
 				"bg-secondary group-hover:bg-primary transition-colors h-[2px]",
 				variant === "default" ? "w-12" : "w-6 mt-2.5 shrink-0",

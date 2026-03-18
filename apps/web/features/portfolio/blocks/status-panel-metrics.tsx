@@ -39,6 +39,7 @@ export function StatusPanelMetrics({ metrics }: StatusPanelMetricsProps) {
 				<div key={metric.label}>
 					<Progress
 						value={animatedValues[i]}
+						aria-label={metric.label}
 						className="h-1 rounded-none"
 						indicatorClassName="duration-700 ease-out"
 					/>

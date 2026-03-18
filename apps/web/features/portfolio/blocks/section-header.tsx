@@ -19,7 +19,7 @@ export function SectionHeader({ heading, description, className, headingClassNam
 				>
 					{heading}
 				</h2>
-				<div className="h-1 w-24 bg-primary" />
+				<div className="h-1 w-24 bg-primary" aria-hidden="true" />
 			</div>
 			{description && <p className="text-muted-foreground max-w-sm text-left">{description}</p>}
 		</div>

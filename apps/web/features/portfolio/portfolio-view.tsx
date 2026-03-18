@@ -9,10 +9,12 @@ export function PortfolioView() {
 	return (
 		<div className="portfolio-theme min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground overflow-x-hidden">
 			<PortfolioHeader />
-			<PortfolioHero />
-			<PortfolioProjects />
-			<PortfolioSkills />
-			<PortfolioAbout />
+			<main id="main-content">
+				<PortfolioHero />
+				<PortfolioProjects />
+				<PortfolioSkills />
+				<PortfolioAbout />
+			</main>
 			<PortfolioFooter />
 		</div>
 	);

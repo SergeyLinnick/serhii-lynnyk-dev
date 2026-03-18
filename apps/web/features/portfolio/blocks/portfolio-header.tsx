@@ -30,6 +30,12 @@ export function PortfolioHeader() {
 			wrapperClassName="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border"
 			className="mx-auto max-w-7xl flex items-center justify-between h-16 uppercase"
 		>
+			<a
+				href="#main-content"
+				className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:border focus:border-primary focus:font-mono focus:text-sm"
+			>
+				Skip to main content
+			</a>
 			<div className="text-xl font-bold font-mono tracking-tighter">
 				{firstName}
 				<span className="text-primary">_</span>
@@ -44,6 +50,7 @@ export function PortfolioHeader() {
 					<Link
 						key={link.href}
 						href={link.href}
+						aria-current={activeId === link.href.replace("#", "") ? "page" : undefined}
 						className={cn(
 							"hover:text-primary transition-colors",
 							activeId === link.href.replace("#", "") && "text-primary",
@@ -96,6 +103,7 @@ export function PortfolioHeader() {
 								key={link.href}
 								href={link.href}
 								onClick={() => setMobileOpen(false)}
+								aria-current={activeId === link.href.replace("#", "") ? "page" : undefined}
 								className={cn(
 									"text-lg font-display uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors",
 									activeId === link.href.replace("#", "") && "text-primary",

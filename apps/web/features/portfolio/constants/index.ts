@@ -1,4 +1,6 @@
-import { Bot, Code2, Cpu, Github, Linkedin, Mail, ShieldCheck } from "lucide-react";
+import { Bot, Code2, Cpu, Mail, ShieldCheck } from "lucide-react";
+import { GithubIcon } from "../blocks/github-icon";
+import { LinkedinIcon } from "../blocks/linkedin-icon";
 import type {
 	EducationEntry,
 	HeroContent,
@@ -26,8 +28,18 @@ export const NAV_LINKS: NavLink[] = [
 // social shared by Hero + Footer
 
 export const SOCIAL_LINKS: SocialLink[] = [
-	{ icon: Github, href: "https://github.com/SergeyLinnick", label: "GITHUB" },
-	{ icon: Linkedin, href: "https://www.linkedin.com/in/sergeylinnick/", label: "LINKEDIN" },
+	{
+		icon: GithubIcon,
+		href: "https://github.com/SergeyLinnick",
+		label: "GITHUB",
+		deepLinkScheme: "github://github.com/SergeyLinnick",
+	},
+	{
+		icon: LinkedinIcon,
+		href: "https://www.linkedin.com/in/sergeylinnick/",
+		label: "LINKEDIN",
+		deepLinkScheme: "linkedin://in/sergeylinnick/",
+	},
 	{ icon: Mail, href: "mailto:serhiilynnyk@duck.com", label: "EMAIL" },
 ];
 

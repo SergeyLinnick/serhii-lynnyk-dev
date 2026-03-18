@@ -25,6 +25,7 @@ export interface SocialLink {
 	icon: ComponentType<{ className?: string }>;
 	href: string;
 	label: string;
+	deepLinkScheme?: string;
 }
 
 export interface IconBoxItem {

@@ -42,7 +42,7 @@ export function PortfolioAbout() {
 					<div className="space-y-8">
 						<div className="p-6 border border-white/5 bg-white/[0.02] backdrop-blur-sm space-y-4">
 							<div className="flex items-center gap-3">
-								<GraduationCap className="h-5 w-5 text-primary" />
+								<GraduationCap className="h-5 w-5 text-primary" aria-hidden="true" />
 								<h3 className="text-xl font-display">Education</h3>
 							</div>
 							<div className="space-y-1">
@@ -53,7 +53,7 @@ export function PortfolioAbout() {
 
 						<div className="p-6 border border-white/5 bg-white/[0.02] backdrop-blur-sm space-y-4">
 							<div className="flex items-center gap-3">
-								<Languages className="h-5 w-5 text-primary" />
+								<Languages className="h-5 w-5 text-primary" aria-hidden="true" />
 								<h3 className="text-xl font-display">Languages</h3>
 							</div>
 							<div className="flex flex-wrap gap-3">
@@ -70,7 +70,7 @@ export function PortfolioAbout() {
 
 						<div className="p-6 border border-white/5 bg-white/[0.02] backdrop-blur-sm space-y-4">
 							<div className="flex items-center gap-3">
-								<Activity className="h-5 w-5 text-primary" />
+								<Activity className="h-5 w-5 text-primary" aria-hidden="true" />
 								<h3 className="text-xl font-display">Activities</h3>
 							</div>
 							<div className="flex flex-wrap gap-3">

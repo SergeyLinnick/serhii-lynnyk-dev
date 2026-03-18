@@ -3,9 +3,16 @@ import { cn } from "@workspace/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { HERO_CONTENT, SOCIAL_LINKS, STATUS_PANEL_HIGHLIGHT, STATUS_PANEL_METRICS, STATUS_PANEL_TOP } from "../constants";
+import {
+	HERO_CONTENT,
+	SOCIAL_LINKS,
+	STATUS_PANEL_HIGHLIGHT,
+	STATUS_PANEL_METRICS,
+	STATUS_PANEL_TOP,
+} from "../constants";
 import { Container } from "./container";
 import { LazyVideo } from "./lazy-video";
+import { SocialLinkItem } from "./social-link-item";
 import { StatusPanelMetrics } from "./status-panel-metrics";
 
 export function PortfolioHero() {
@@ -33,8 +40,8 @@ export function PortfolioHero() {
 			<div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
 				<div className="space-y-6">
 					<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/5 text-primary text-xs font-mono">
-						<span className="relative flex h-2 w-2">
-							<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+						<span className="relative flex h-2 w-2" aria-hidden="true">
+							<span className="animate-ping motion-reduce:animate-none absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
 							<span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
 						</span>
 						{HERO_CONTENT.statusBadge}
@@ -57,21 +64,18 @@ export function PortfolioHero() {
 						<Link href={HERO_CONTENT.ctaHref} className={cn("uppercase", buttonVariants({ size: "lg" }))}>
 							{HERO_CONTENT.ctaLabel} <ArrowRight className="size-4" />
 						</Link>
-						<div className="h-8 w-px bg-border" />
+						<div className="h-8 w-px bg-border" aria-hidden="true" />
 						<div className="flex gap-2">
 							{SOCIAL_LINKS.map(link => (
-								<Link
+								<SocialLinkItem
 									key={link.label}
 									href={link.href}
-									aria-label={link.label}
-									{...(!link.href.startsWith("mailto:") && {
-										target: "_blank",
-										rel: "noopener noreferrer",
-									})}
+									label={link.label}
+									deepLinkScheme={link.deepLinkScheme}
 									className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
 								>
 									<link.icon className="h-5 w-5" />
-								</Link>
+								</SocialLinkItem>
 							))}
 						</div>
 					</div>

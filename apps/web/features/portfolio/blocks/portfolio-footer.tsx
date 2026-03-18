@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { COPYRIGHT_TEXT, SOCIAL_LINKS } from "../constants";
 import { Container } from "./container";
+import { SocialLinkItem } from "./social-link-item";
 
 export function PortfolioFooter() {
 	return (
@@ -12,15 +12,15 @@ export function PortfolioFooter() {
 				<div className="text-xs font-mono text-muted-foreground">{COPYRIGHT_TEXT}</div>
 				<div className="flex gap-6 text-xs font-mono text-muted-foreground">
 					{SOCIAL_LINKS.map(link => (
-						<Link
+						<SocialLinkItem
 							key={link.label}
 							href={link.href}
-							aria-label={link.label}
-							{...(!link.href.startsWith("mailto:") && { target: "_blank", rel: "noopener noreferrer" })}
+							label={link.label}
+							deepLinkScheme={link.deepLinkScheme}
 							className="hover:text-primary transition-colors"
 						>
 							{link.label}
-						</Link>
+						</SocialLinkItem>
 					))}
 				</div>
 			</div>
