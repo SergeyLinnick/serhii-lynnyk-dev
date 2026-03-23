@@ -1,6 +1,7 @@
 export const PAGE_URLS = {
 	HOME: "/",
 	LOGIN: "/auth/login",
+	REGISTER: "/auth/register",
 	DASHBOARD: "/dashboard",
 	TASKS: "/tasks",
 	TASK_CREATE: "/tasks/new",

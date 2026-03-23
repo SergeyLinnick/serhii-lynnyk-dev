@@ -1,9 +1,11 @@
-import { PortfolioAbout } from "./blocks/portfolio-about";
+import dynamic from "next/dynamic";
 import { PortfolioFooter } from "./blocks/portfolio-footer";
 import { PortfolioHeader } from "./blocks/portfolio-header";
 import { PortfolioHero } from "./blocks/portfolio-hero";
-import { PortfolioProjects } from "./blocks/portfolio-projects";
-import { PortfolioSkills } from "./blocks/portfolio-skills";
+
+const PortfolioProjects = dynamic(() => import("./blocks/portfolio-projects").then(m => m.PortfolioProjects));
+const PortfolioSkills = dynamic(() => import("./blocks/portfolio-skills").then(m => m.PortfolioSkills));
+const PortfolioAbout = dynamic(() => import("./blocks/portfolio-about").then(m => m.PortfolioAbout));
 
 export function PortfolioView() {
 	return (

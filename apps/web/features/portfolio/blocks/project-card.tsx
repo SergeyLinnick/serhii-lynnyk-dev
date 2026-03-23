@@ -43,7 +43,10 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
 		>
 			<div className="grid gap-4">
 				<CardHeader className="relative grid gap-4">
-					<span className="absolute top-4 right-6 text-4xl font-bold text-muted-foreground/20 font-mono leading-none" aria-hidden="true">
+					<span
+						className="absolute top-4 right-6 text-4xl font-bold text-muted-foreground/20 font-mono leading-none"
+						aria-hidden="true"
+					>
 						{String(index + 1).padStart(2, "0")}
 					</span>
 					<div className="space-y-1">
@@ -72,7 +75,13 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
 							</Badge>
 						))}
 						{hasMoreTags && (
-							<button type="button" aria-expanded={tagsOpen} onClick={() => setTagsOpen(!tagsOpen)}>
+							<button
+								type="button"
+								className="inline-flex"
+								aria-expanded={tagsOpen}
+								aria-label={tagsOpen ? "Show fewer tags" : `Show ${hiddenTagsCount} more tags`}
+								onClick={() => setTagsOpen(!tagsOpen)}
+							>
 								<Badge
 									variant="outline"
 									className="font-mono text-xs cursor-pointer hover:bg-secondary transition-colors"

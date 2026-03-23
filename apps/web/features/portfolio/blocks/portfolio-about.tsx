@@ -8,6 +8,7 @@ export function PortfolioAbout() {
 	return (
 		<Container
 			id="about"
+			component="section"
 			wrapperClassName="relative py-24 border-t border-border overflow-hidden"
 			className="mx-auto max-w-7xl"
 		>
@@ -18,6 +19,7 @@ export function PortfolioAbout() {
 						alt=""
 						fill
 						sizes="100vw"
+						quality={60}
 						className="object-cover object-center"
 					/>
 				</div>

@@ -1,3 +1,5 @@
+export { LoginSchema, RegisterFormSchema, RegisterSchema } from "./auth/schema";
+export type { LoginType, RegisterFormType, RegisterType } from "./auth/types";
 export { API_TIMEOUT_MS, DEFAULT_PAGE_SIZE } from "./constants/api-constants";
 export { ERROR_MESSAGES } from "./constants/error-messages";
 export { customErrorMap } from "./error-map";

@@ -1,5 +1,6 @@
 html:has(.portfolio-theme) {
 	scroll-behavior: smooth;
+	scroll-padding-top: 4rem;
 }
 
 .portfolio-theme {

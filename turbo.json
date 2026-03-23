@@ -1,9 +1,14 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"globalEnv": [
+		"BETTER_AUTH_API_KEY",
+		"BETTER_AUTH_SECRET",
+		"BETTER_AUTH_URL",
 		"CI",
 		"DATABASE_URL",
 		"DATABASE_URL_UNPOOLED",
+		"NEXT_PUBLIC_APP_URL",
+		"NEXT_PUBLIC_BETTER_AUTH_URL",
 		"NEXT_PUBLIC_SENTRY_DSN",
 		"NEXT_RUNTIME",
 		"NODE_ENV",

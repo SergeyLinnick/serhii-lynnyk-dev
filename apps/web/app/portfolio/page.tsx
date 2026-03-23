@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
 import { PortfolioView } from "@/features/portfolio/portfolio-view";
-import "./portfolio.css";
+import type { Metadata } from "next";
+
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
 	title: "Serhii Lynnyk — Front-End Engineer",
-	description: "Front-End Engineer with 10+ years of experience. React/Next.js specialist building scalable, maintainable web applications.",
+	description:
+		"Front-End Engineer with 10+ years of experience. React/Next.js specialist building scalable, maintainable web applications.",
 	openGraph: {
 		title: "Serhii Lynnyk — Front-End Engineer",
 		description: "Front-End Engineer with 10+ years of experience. React/Next.js specialist.",

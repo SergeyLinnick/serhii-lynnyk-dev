@@ -3,6 +3,7 @@
 	"version": "0.0.1",
 	"dependencies": {
 		"@better-auth/drizzle-adapter": "1.5.3",
+		"@better-auth/infra": "latest",
 		"@workspace/db": "workspace:*",
 		"@workspace/utils": "workspace:*",
 		"better-auth": "^1.5.3",

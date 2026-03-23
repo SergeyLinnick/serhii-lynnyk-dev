@@ -1,17 +1,20 @@
 import { ThemeProvider } from "next-themes";
 import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import type { ReactNode } from "react";
+import "./portfolio.css";
 
 const spaceGrotesk = Space_Grotesk({
 	variable: "--font-space-grotesk",
 	subsets: ["latin"],
 	display: "swap",
+	weight: ["400", "700"],
 });
 
 const jetBrainsMono = JetBrains_Mono({
 	variable: "--font-jetbrains-mono",
 	subsets: ["latin"],
 	display: "swap",
+	weight: ["400"],
 });
 
 export default function PortfolioLayout({ children }: { children: ReactNode }) {

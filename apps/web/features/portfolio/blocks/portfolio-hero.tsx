@@ -1,6 +1,7 @@
 import { buttonVariants } from "@workspace/ui";
 import { cn } from "@workspace/utils";
 import { ArrowRight } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -11,13 +12,15 @@ import {
 	STATUS_PANEL_TOP,
 } from "../constants";
 import { Container } from "./container";
-import { LazyVideo } from "./lazy-video";
 import { SocialLinkItem } from "./social-link-item";
-import { StatusPanelMetrics } from "./status-panel-metrics";
+
+const LazyVideo = dynamic(() => import("./lazy-video").then(m => m.LazyVideo));
+const StatusPanelMetrics = dynamic(() => import("./status-panel-metrics").then(m => m.StatusPanelMetrics));
 
 export function PortfolioHero() {
 	return (
 		<Container
+			component="section"
 			wrapperClassName="relative min-h-screen flex items-center pt-16 overflow-hidden"
 			className="mx-auto max-w-7xl flex-1"
 		>
@@ -30,6 +33,7 @@ export function PortfolioHero() {
 						fill
 						sizes="100vw"
 						priority
+						quality={60}
 						className="object-cover object-center"
 					/>
 					<div className="absolute inset-0 bg-primary mix-blend-color-dodge dark:mix-blend-color" />
@@ -47,10 +51,10 @@ export function PortfolioHero() {
 						{HERO_CONTENT.statusBadge}
 					</div>
 					<h1 className="text-6xl md:text-8xl font-display tracking-tighter leading-[0.9] drop-shadow-md">
-						{HERO_CONTENT.headingLines.map(line => (
+						{HERO_CONTENT.headingLines.map((line, i) => (
 							<span key={line}>
 								{line}
-								<br />
+								{i < HERO_CONTENT.headingLines.length - 1 && <br />}
 							</span>
 						))}
 						<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-foreground">

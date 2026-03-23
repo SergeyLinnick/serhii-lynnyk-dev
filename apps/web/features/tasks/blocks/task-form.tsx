@@ -30,7 +30,12 @@ export function TaskForm({ onSubmit, defaultValues, isSubmitting }: TaskFormProp
 		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 			<div className="flex flex-col gap-2">
 				<Label htmlFor="title">Title</Label>
-				<Input id="title" placeholder="Task title" {...register("title")} />
+				<Input
+					id="title"
+					placeholder="Task title"
+					aria-invalid={!!errors.title || undefined}
+					{...register("title")}
+				/>
 				{errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
 			</div>
 
@@ -38,8 +43,9 @@ export function TaskForm({ onSubmit, defaultValues, isSubmitting }: TaskFormProp
 				<Label htmlFor="description">Description</Label>
 				<textarea
 					id="description"
-					className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+					className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive"
 					placeholder="Task description (optional)"
+					aria-invalid={!!errors.description || undefined}
 					{...register("description")}
 				/>
 				{errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
@@ -49,7 +55,8 @@ export function TaskForm({ onSubmit, defaultValues, isSubmitting }: TaskFormProp
 				<Label htmlFor="status">Status</Label>
 				<select
 					id="status"
-					className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+					className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring aria-invalid:border-destructive"
+					aria-invalid={!!errors.status || undefined}
 					{...register("status")}
 				>
 					<option value="todo">To Do</option>
