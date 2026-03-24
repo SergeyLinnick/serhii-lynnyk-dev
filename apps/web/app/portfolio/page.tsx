@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 	description:
 		"Front-End Engineer with 10+ years of experience. React/Next.js specialist building scalable, maintainable web applications.",
 	openGraph: {
+		url: "https://serhii-lynnyk-dev.vercel.app/portfolio",
 		title: "Serhii Lynnyk — Front-End Engineer",
 		description: "Front-End Engineer with 10+ years of experience. React/Next.js specialist.",
 		siteName: "Serhii Lynnyk",
