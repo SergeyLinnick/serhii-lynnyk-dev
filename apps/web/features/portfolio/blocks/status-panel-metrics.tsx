@@ -20,17 +20,24 @@ export function StatusPanelMetrics({ metrics }: StatusPanelMetricsProps) {
 			return;
 		}
 
-		const timeouts = metrics.map((metric, i) =>
-			setTimeout(() => {
-				setAnimatedValues(prev => {
-					const next = [...prev];
-					next[i] = metric.progress ?? 100;
-					return next;
-				});
-			}, i * FILL_DURATION),
-		);
+		let timeouts: ReturnType<typeof setTimeout>[] = [];
+		const scheduleIdle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1));
+		const idleId = scheduleIdle(() => {
+			timeouts = metrics.map((metric, i) =>
+				setTimeout(() => {
+					setAnimatedValues(prev => {
+						const next = [...prev];
+						next[i] = metric.progress ?? 100;
+						return next;
+					});
+				}, i * FILL_DURATION),
+			);
+		});
 
-		return () => timeouts.forEach(clearTimeout);
+		return () => {
+			(window.cancelIdleCallback ?? clearTimeout)(idleId);
+			timeouts.forEach(clearTimeout);
+		};
 	}, [metrics]);
 
 	return (

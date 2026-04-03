@@ -25,10 +25,12 @@ interface Particle {
 	alive: boolean;
 }
 
-const MAX_STEPS = 8;
+const MAX_STEPS = 4;
 const POOL_SIZE = 400;
 const FRAME_MS = 16.667;
 const TIME_GAP_THRESHOLD = 100;
+const MOVE_THROTTLE_MS = 16;
+const RESIZE_DEBOUNCE_MS = 100;
 
 function createParticle(): Particle {
 	return {
@@ -62,6 +64,7 @@ export function SparkleTrail({
 	const running = useRef(false);
 	const disposed = useRef(false);
 	const lastFrameTime = useRef(0);
+	const cleanupRef = useRef<(() => void) | null>(null);
 
 	const propsRef = useRef({ color, count, size, life, speed });
 	propsRef.current = { color, count, size, life, speed };
@@ -72,12 +75,6 @@ export function SparkleTrail({
 		H: number;
 		dpr: number;
 	} | null>(null);
-
-	if (pool.current.length === 0) {
-		for (let i = 0; i < POOL_SIZE; i++) {
-			pool.current.push(createParticle());
-		}
-	}
 
 	const drawStar = (
 		ctx: CanvasRenderingContext2D,
@@ -230,78 +227,93 @@ export function SparkleTrail({
 
 		disposed.current = false;
 
-		let W = 0,
-			H = 0,
-			dpr = 1;
+		const init = () => {
+			if (disposed.current) return;
 
-		const resize = () => {
-			dpr = window.devicePixelRatio || 1;
-			W = window.innerWidth;
-			H = window.innerHeight;
-			canvas.width = W * dpr;
-			canvas.height = H * dpr;
-			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-			ctxRef.current = { ctx, W, H, dpr };
-		};
-
-		resize();
-		window.addEventListener("resize", resize);
-
-		const onMove = (clientX: number, clientY: number) => {
-			const now = performance.now();
-			if (lastPos.current) {
-				const timeSinceLast = now - lastPos.current.time;
-				if (timeSinceLast > TIME_GAP_THRESHOLD) {
-					lastPos.current = null;
+			if (pool.current.length === 0) {
+				for (let i = 0; i < POOL_SIZE; i++) {
+					pool.current.push(createParticle());
 				}
 			}
 
-			const mx = clientX;
-			const my = clientY;
-			if (lastPos.current) {
-				const dx = mx - lastPos.current.x;
-				const dy = my - lastPos.current.y;
-				const dist = Math.sqrt(dx * dx + dy * dy);
-				const steps = Math.min(MAX_STEPS, Math.max(1, Math.floor(dist / 6)));
-				for (let s = 0; s < steps; s++) {
-					const t = s / steps;
-					spawn.current(lastPos.current.x + dx * t, lastPos.current.y + dy * t);
+			let W = 0,
+				H = 0,
+				dpr = 1;
+
+			const resize = () => {
+				dpr = window.devicePixelRatio || 1;
+				W = window.innerWidth;
+				H = window.innerHeight;
+				canvas.width = W * dpr;
+				canvas.height = H * dpr;
+				ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+				ctxRef.current = { ctx, W, H, dpr };
+			};
+
+			resize();
+			let resizeTimer = 0;
+			const debouncedResize = () => {
+				clearTimeout(resizeTimer);
+				resizeTimer = window.setTimeout(resize, RESIZE_DEBOUNCE_MS);
+			};
+			window.addEventListener("resize", debouncedResize);
+
+			let lastMoveTime = 0;
+			const onMove = (clientX: number, clientY: number) => {
+				const now = performance.now();
+				if (now - lastMoveTime < MOVE_THROTTLE_MS) return;
+				lastMoveTime = now;
+				if (lastPos.current) {
+					const timeSinceLast = now - lastPos.current.time;
+					if (timeSinceLast > TIME_GAP_THRESHOLD) {
+						lastPos.current = null;
+					}
 				}
-			} else {
-				spawn.current(mx, my);
-			}
-			lastPos.current = { x: mx, y: my, time: now };
+
+				const mx = clientX;
+				const my = clientY;
+				if (lastPos.current) {
+					const dx = mx - lastPos.current.x;
+					const dy = my - lastPos.current.y;
+					const dist = Math.sqrt(dx * dx + dy * dy);
+					const steps = Math.min(MAX_STEPS, Math.max(1, Math.floor(dist / 6)));
+					for (let s = 0; s < steps; s++) {
+						const t = s / steps;
+						spawn.current(lastPos.current.x + dx * t, lastPos.current.y + dy * t);
+					}
+				} else {
+					spawn.current(mx, my);
+				}
+				lastPos.current = { x: mx, y: my, time: now };
+			};
+
+			const handleMouse = (e: MouseEvent) => onMove(e.clientX, e.clientY);
+			const handleLeave = () => {
+				lastPos.current = null;
+			};
+
+			window.addEventListener("mousemove", handleMouse);
+			window.addEventListener("mouseleave", handleLeave);
+
+			cleanupRef.current = () => {
+				clearTimeout(resizeTimer);
+				window.removeEventListener("resize", debouncedResize);
+				window.removeEventListener("mousemove", handleMouse);
+				window.removeEventListener("mouseleave", handleLeave);
+			};
 		};
 
-		const handleMouse = (e: MouseEvent) => onMove(e.clientX, e.clientY);
-		const handleTouch = (e: TouchEvent) => {
-			e.preventDefault();
-			const touch = e.touches[0];
-			if (touch) onMove(touch.clientX, touch.clientY);
-		};
-		const handleTouchStart = (e: TouchEvent) => {
-			const touch = e.touches[0];
-			if (touch) onMove(touch.clientX, touch.clientY);
-		};
-		const handleLeave = () => {
-			lastPos.current = null;
-		};
-
-		window.addEventListener("mousemove", handleMouse);
-		window.addEventListener("touchstart", handleTouchStart, { passive: true });
-		window.addEventListener("touchmove", handleTouch, { passive: false });
-		window.addEventListener("mouseleave", handleLeave);
+		const cancelIdle = window.cancelIdleCallback ?? clearTimeout;
+		const scheduleIdle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1));
+		const idleId = scheduleIdle(init);
 
 		return () => {
+			cancelIdle(idleId);
 			disposed.current = true;
 			cancelAnimationFrame(animId.current);
 			running.current = false;
 			ctxRef.current = null;
-			window.removeEventListener("resize", resize);
-			window.removeEventListener("mousemove", handleMouse);
-			window.removeEventListener("touchstart", handleTouchStart);
-			window.removeEventListener("touchmove", handleTouch);
-			window.removeEventListener("mouseleave", handleLeave);
+			cleanupRef.current?.();
 		};
 	}, []);
 

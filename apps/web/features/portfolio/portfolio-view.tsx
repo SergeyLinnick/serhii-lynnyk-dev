@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
+import { ClientSparkleTrail } from "./blocks/client-sparkle-trail";
 import { PortfolioFooter } from "./blocks/portfolio-footer";
 import { PortfolioHeader } from "./blocks/portfolio-header";
 import { PortfolioHero } from "./blocks/portfolio-hero";
-import { SparkleTrail } from "./blocks/sparkle-trail";
 
 const PortfolioProjects = dynamic(() => import("./blocks/portfolio-projects").then(m => m.PortfolioProjects));
 const PortfolioSkills = dynamic(() => import("./blocks/portfolio-skills").then(m => m.PortfolioSkills));
@@ -19,7 +19,7 @@ export function PortfolioView() {
 				<PortfolioAbout />
 			</main>
 			<PortfolioFooter />
-			<SparkleTrail count={2} size={2} life={500} speed={0.6} />
+			<ClientSparkleTrail count={2} size={2} life={500} speed={0.6} />
 		</div>
 	);
 }
