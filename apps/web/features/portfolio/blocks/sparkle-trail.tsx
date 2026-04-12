@@ -202,14 +202,14 @@ export function SparkleTrail({
 			}
 
 			const angle = Math.random() * Math.PI * 2;
-			const spd = (0.3 + Math.random() * 1.5) * sp;
+			const spd = (0.5 + Math.random() * 1.0) * sp;
 			p.x = x;
 			p.y = y;
 			p.vx = Math.cos(angle) * spd;
 			p.vy = Math.sin(angle) * spd;
 			p.size = (0.5 + Math.random()) * s;
 			p.born = performance.now();
-			p.life = l * (0.6 + Math.random() * 0.8);
+			p.life = l * (0.8 + Math.random() * 0.6);
 			p.rot = Math.random() * Math.PI;
 			p.rotSpeed = (Math.random() - 0.5) * 0.08;
 			p.type = Math.random() > 0.4 ? "star" : "dot";

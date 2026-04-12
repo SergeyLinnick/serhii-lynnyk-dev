@@ -19,7 +19,7 @@ export function PortfolioView() {
 				<PortfolioAbout />
 			</main>
 			<PortfolioFooter />
-			<ClientSparkleTrail count={2} size={2} life={500} speed={0.6} />
+			<ClientSparkleTrail count={2} size={2} life={500} speed={1} />
 		</div>
 	);
 }

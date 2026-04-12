@@ -2,11 +2,11 @@
 
 ## Overview
 
-Canvas-based particle system that spawns star and dot shapes from the mouse cursor on the portfolio page. Desktop only — no touch support by design.
+Canvas-based particle system that spawns star and dot shapes from the mouse cursor on the portfolio hero section. Scoped to the hero container only (not fullscreen). Desktop only — no touch support by design.
 
 **File:** `apps/web/features/portfolio/blocks/sparkle-trail.tsx`
 **Wrapper:** `apps/web/features/portfolio/blocks/client-sparkle-trail.tsx` (client component with dynamic import, `ssr: false`)
-**Integration:** `apps/web/features/portfolio/portfolio-view.tsx` (imports wrapper as server-compatible component)
+**Integration:** `apps/web/features/portfolio/blocks/portfolio-hero.tsx` (placed inside hero `Container`)
 
 ## Props
 
@@ -19,7 +19,7 @@ Canvas-based particle system that spawns star and dot shapes from the mouse curs
 | `speed` | `number` | `1` | Velocity multiplier |
 | `zIndex` | `number` | `50` | Canvas z-index |
 
-**Current usage:** `<SparkleTrail count={2} size={2} life={500} speed={0.6} />`
+**Current usage:** `<SparkleTrail count={2} size={2} life={500} speed={1} />`
 
 ## Architecture
 
@@ -37,6 +37,7 @@ mousemove → onMove → spawn() → startLoop() → tick() → render() → rAF
 - **Delta-time physics** — frame-rate independent: `p.x += p.vx * dt`, `friction = 0.98^dt`
 - **Desktop only** — touch events removed to avoid blocking mobile scroll
 - **Deferred init** — `requestIdleCallback` delays pool creation and event listeners until browser is idle
+- **Hero-scoped** — canvas is `position: absolute` inside hero container, not fullscreen. Events listen on parent element, coordinates are container-relative. `ResizeObserver` tracks container size changes
 
 ### Constants
 
@@ -47,7 +48,6 @@ mousemove → onMove → spawn() → startLoop() → tick() → render() → rAF
 | `FRAME_MS` | `16.667` | Reference frame duration (60fps) for delta-time |
 | `TIME_GAP_THRESHOLD` | `100ms` | Reset lastPos if gap between moves exceeds this |
 | `MOVE_THROTTLE_MS` | `16ms` | Minimum interval between mousemove processing |
-| `RESIZE_DEBOUNCE_MS` | `100ms` | Debounce window resize handler |
 
 ## Rendering
 
