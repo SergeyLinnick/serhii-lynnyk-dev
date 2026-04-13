@@ -1,6 +1,8 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { isAppError } from "@workspace/models";
 import { toast } from "@workspace/ui";
 import { lazy, Suspense, useState, type ReactNode } from "react";
 
@@ -22,11 +24,22 @@ function makeQueryClient() {
 		},
 		mutationCache: new MutationCache({
 			onError: error => {
+				Sentry.addBreadcrumb({
+					category: "mutation",
+					message: error.message,
+					level: isAppError(error) ? "warning" : "error",
+					data: isAppError(error) ? { code: error.code, details: error.details } : undefined,
+				});
 				toast.error(error.message ?? "Something went wrong");
 			},
 		}),
 		queryCache: new QueryCache({
 			onError: error => {
+				Sentry.addBreadcrumb({
+					category: "query",
+					message: error.message,
+					level: "error",
+				});
 				toast.error(error.message ?? "Failed to fetch data");
 			},
 		}),

@@ -233,10 +233,116 @@ export function ApiProvider({ children }: { children: ReactNode }) {
 }
 ```
 
+## Server-Side Validation -- safeAction
+
+The `safeAction` wrapper provides runtime Zod validation for Server Actions. It sits between the caller and the handler, ensuring data integrity even if client-side validation is bypassed.
+
+```ts
+// _common/safe-action.ts
+import * as Sentry from "@sentry/nextjs";
+import { ApplicationError, ERROR_CODES } from "@workspace/models";
+import { type z, flattenError } from "zod";
+
+export function safeAction<TSchema extends z.ZodType, TResult>(
+	schema: TSchema,
+	handler: (data: z.infer<TSchema>) => Promise<TResult>,
+) {
+	return async (raw: unknown): Promise<TResult> => {
+		const result = schema.safeParse(raw);
+		if (!result.success) {
+			const fieldErrors = flattenError(result.error).fieldErrors;
+			Sentry.captureException(
+				new Error(`Contract violation in ${handler.name || "action"}`),
+				{ tags: { category: "validation" }, extra: { fieldErrors }, level: "warning" },
+			);
+			throw new ApplicationError(ERROR_CODES.VALIDATION, "Validation failed", { fieldErrors });
+		}
+		return handler(result.data);
+	};
+}
+```
+
+**Key design decisions:**
+
+- **`raw: unknown`** — Forces Zod to prove data shape. Typing as `z.infer<TSchema>` would let TypeScript pre-trust the data, defeating the purpose of runtime validation.
+- **`Sentry.captureException`** — Bypassed client validation is an anomaly worth alerting on, not just a breadcrumb.
+- **`flattenError()`** — Zod v4 standalone function replacing the deprecated `.flatten()` instance method.
+- **`ApplicationError`** — Reuses the existing error class with `ERROR_CODES.VALIDATION`.
+
+### Usage -- Single-arg Actions
+
+```ts
+// task/actions.ts
+import { TaskFormSchema } from "@workspace/models";
+import { safeAction } from "../_common/safe-action";
+
+export const createTaskAction = safeAction(TaskFormSchema, async (data) => {
+	const session = await getAuthenticatedSession();
+	const [result] = await db.insert(task).values({ ...data, userId: session.user.id }).returning();
+	return result;
+});
+```
+
+### Usage -- Multi-arg Actions (Combined Payload Schema)
+
+When an action needs multiple arguments (e.g., `id` + `data`), combine them into a single Zod schema:
+
+```ts
+const UpdateTaskPayloadSchema = z.object({
+	id: z.string().uuid(),
+	data: TaskUpdateSchema,
+});
+
+export const updateTaskAction = safeAction(UpdateTaskPayloadSchema, async (payload) => {
+	const session = await getAuthenticatedSession();
+	const [result] = await db.update(task)
+		.set({ ...payload.data, updatedAt: new Date() })
+		.where(and(eq(task.id, payload.id), eq(task.userId, session.user.id)))
+		.returning();
+	return result;
+});
+```
+
+Call site in the hook: `updateTaskAction({ id, data })`.
+
+### When to Use safeAction
+
+| Action type | Use safeAction? | Reason |
+|-------------|-----------------|--------|
+| Create / Update (write mutations) | Yes | Untrusted input must be validated |
+| Read-only queries | No | No external input to validate |
+| Delete by ID | Optional | UUID check may be worthwhile |
+
+### Dual-Layer Validation Flow
+
+```
+Client (React Hook Form + zodResolver)
+  → validates form fields for UX
+  → submits to Server Action
+
+Server (safeAction + Zod)
+  → re-validates with `raw: unknown`
+  → blocks invalid data even if client is bypassed
+  → reports anomalies to Sentry
+```
+
+## Observability -- ApiProvider Sentry Integration
+
+The `ApiProvider` adds Sentry breadcrumbs for all TanStack Query errors via `MutationCache` and `QueryCache` `onError` callbacks. Validation errors (detected via `isAppError()`) are tagged as `"warning"` level; all others as `"error"`.
+
+## Testing
+
+Tests are co-located next to source files (`*.test.ts`). The package uses Vitest.
+
+```bash
+pnpm --filter @workspace/api test
+```
+
 ## Adding a New Domain
 
 1. Create `packages/api/src/<domain>/` directory.
 2. Add `actions.ts` with Server Actions (always authenticate, filter by userId).
-3. Create `queries/` directory with query options and TanStack Query hooks.
-4. Register query keys in `_common/query-keys.ts`.
-5. Export the public API from `index.ts`.
+3. Wrap write mutations with `safeAction(Schema, handler)` using schemas from `@workspace/models`.
+4. Create `queries/` directory with query options and TanStack Query hooks.
+5. Register query keys in `_common/query-keys.ts`.
+6. Export the public API from `index.ts`.

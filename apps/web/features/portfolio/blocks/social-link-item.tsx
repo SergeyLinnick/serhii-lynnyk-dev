@@ -1,22 +1,32 @@
 "use client";
 
+import { useEffect, useRef, type MouseEvent, type ReactNode } from "react";
+
 interface SocialLinkItemProps {
 	href: string;
 	label: string;
 	deepLinkScheme?: string;
 	className?: string;
-	children: React.ReactNode;
+	children: ReactNode;
 }
 
 export function SocialLinkItem({ href, label, deepLinkScheme, className, children }: SocialLinkItemProps) {
 	const isMailto = href.startsWith("mailto:");
 
-	function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
+	const cleanupRef = useRef<(() => void) | null>(null);
+
+	useEffect(() => {
+		return () => cleanupRef.current?.();
+	}, []);
+
+	function handleClick(e: MouseEvent<HTMLAnchorElement>) {
 		if (!deepLinkScheme || navigator.maxTouchPoints === 0) return;
 
 		e.preventDefault();
+		cleanupRef.current?.();
 
 		const fallback = setTimeout(() => {
+			cleanup();
 			window.location.href = href;
 		}, 1000);
 
@@ -24,11 +34,18 @@ export function SocialLinkItem({ href, label, deepLinkScheme, className, childre
 
 		const handleVisibilityChange = () => {
 			if (document.hidden) {
-				clearTimeout(fallback);
-				document.removeEventListener("visibilitychange", handleVisibilityChange);
+				cleanup();
 			}
 		};
 		document.addEventListener("visibilitychange", handleVisibilityChange);
+
+		function cleanup() {
+			clearTimeout(fallback);
+			document.removeEventListener("visibilitychange", handleVisibilityChange);
+			cleanupRef.current = null;
+		}
+
+		cleanupRef.current = cleanup;
 	}
 
 	return (
