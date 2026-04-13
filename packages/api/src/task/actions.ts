@@ -2,9 +2,11 @@
 
 import { db } from "@workspace/db";
 import { task } from "@workspace/db/schema";
-import type { TaskFormType } from "@workspace/models";
+import { TaskFormSchema, TaskUpdateSchema } from "@workspace/models";
 import { and, eq } from "drizzle-orm";
+import { z } from "zod";
 import { getAuthenticatedSession } from "../_common/auth";
+import { safeAction } from "../_common/safe-action";
 
 export async function getTasksAction() {
 	const session = await getAuthenticatedSession();
@@ -20,24 +22,29 @@ export async function getTaskAction(id: string) {
 	return result ?? null;
 }
 
-export async function createTaskAction(data: TaskFormType) {
+export const createTaskAction = safeAction(TaskFormSchema, async data => {
 	const session = await getAuthenticatedSession();
 	const [result] = await db
 		.insert(task)
 		.values({ ...data, userId: session.user.id })
 		.returning();
 	return result;
-}
+});
 
-export async function updateTaskAction(id: string, data: Partial<TaskFormType>) {
+const UpdateTaskPayloadSchema = z.object({
+	id: z.string().uuid(),
+	data: TaskUpdateSchema,
+});
+
+export const updateTaskAction = safeAction(UpdateTaskPayloadSchema, async payload => {
 	const session = await getAuthenticatedSession();
 	const [result] = await db
 		.update(task)
-		.set({ ...data, updatedAt: new Date() })
-		.where(and(eq(task.id, id), eq(task.userId, session.user.id)))
+		.set({ ...payload.data, updatedAt: new Date() })
+		.where(and(eq(task.id, payload.id), eq(task.userId, session.user.id)))
 		.returning();
 	return result;
-}
+});
 
 export async function deleteTaskAction(id: string) {
 	const session = await getAuthenticatedSession();

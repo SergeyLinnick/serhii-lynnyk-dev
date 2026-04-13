@@ -184,3 +184,49 @@ Use [Sentry](https://sentry.io/) with the `@sentry/nextjs` SDK.
 - Generous free tier suitable for early-stage projects; transparent pricing at scale.
 - The `/monitoring` tunnel route avoids ad blocker interference without a proxy.
 - Source map uploads via `SENTRY_AUTH_TOKEN` in CI produce readable stack traces in production.
+
+---
+
+## 10. safeAction Wrapper for Server-Side Validation
+
+### Context
+
+Server Actions receive data from the client. Even with client-side form validation (React Hook Form + zodResolver), the server boundary is untrusted — users can bypass the UI, call actions directly, or submit malformed data via browser dev tools. The project needed a consistent pattern for runtime validation on the server.
+
+### Options Considered
+
+1. **Inline validation** — Each action calls `schema.safeParse()` manually. Simple but repetitive and error-prone.
+2. **Generic wrapper (`safeAction`)** — Single function that validates, reports, and delegates. Consistent pattern across all actions.
+3. **Middleware-based validation** — Framework-level validation layer. Over-engineered for Server Actions.
+
+### Decision
+
+Use a generic `safeAction(schema, handler)` wrapper in `packages/api/src/_common/safe-action.ts`. All write mutations (create, update) must be wrapped. Read-only actions are exempt.
+
+### Rationale
+
+- **`raw: unknown` type boundary** — Forces Zod to prove the data shape at runtime. Typing the input as `z.infer<TSchema>` would let TypeScript pre-trust it, defeating the purpose.
+- **`Sentry.captureException`** — Bypassed client validation is an anomaly (not routine), warranting an alert rather than just a breadcrumb.
+- **Combined payload schema** — Multi-arg actions (e.g., `updateTaskAction(id, data)`) use `z.object({ id, data })` to fit the single-argument wrapper without inline validation.
+- **`flattenError()` (Zod v4)** — Standalone import from `zod` replacing the deprecated `.flatten()` instance method.
+- **Reuses `ApplicationError`** — Leverages the existing error class with `ERROR_CODES.VALIDATION` instead of inventing a new error type.
+- **Scalable** — Every new domain module follows the same pattern: define schema in `@workspace/models`, wrap action with `safeAction`.
+
+---
+
+## 11. Dual-Layer Validation Strategy
+
+### Context
+
+The project validates user input on the client (React Hook Form + zodResolver) for UX and on the server (safeAction + Zod) for security. The question was whether both layers are necessary and how they should interact.
+
+### Decision
+
+Maintain both validation layers. Client validates for UX (instant feedback). Server validates for security (blocks tampered/bypassed requests). Schemas are shared from `@workspace/models`.
+
+### Rationale
+
+- Client validation alone is insufficient — it can be bypassed entirely.
+- Server validation alone would degrade UX — users would wait for a round trip to see errors.
+- Shared Zod schemas from `@workspace/models` eliminate duplication between layers.
+- Server-side violations trigger Sentry alerts, providing observability into potential attacks or bugs.

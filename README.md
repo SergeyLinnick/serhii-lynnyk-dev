@@ -47,6 +47,32 @@ pnpm dev
 | `pnpm format`         | Format all files with Prettier     |
 | `pnpm syncpack-check` | Check dependency version alignment |
 
+## Testing
+
+Tests use [Vitest](https://vitest.dev/) with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/).
+
+```bash
+# Run all tests across the monorepo
+pnpm test
+
+# Run tests for a specific package
+pnpm --filter @workspace/api test
+pnpm --filter @workspace/ui test
+
+# Run tests for a specific app
+pnpm --filter web test
+pnpm --filter admin test
+```
+
+Test files are **co-located** with source files using the `*.test.ts(x)` naming convention.
+
+| Package          | Config             | Environment | Coverage        |
+| ---------------- | ------------------ | ----------- | --------------- |
+| `@workspace/ui`  | `vitest.config.ts` | jsdom       | Component tests |
+| `@workspace/api` | `vitest.config.ts` | node        | Unit tests      |
+| `web`            | `vitest.config.ts` | jsdom       | Feature tests   |
+| `admin`          | `vitest.config.ts` | jsdom       | Feature tests   |
+
 ## Packages
 
 | Package                        | Description                       | Docs                                             |
