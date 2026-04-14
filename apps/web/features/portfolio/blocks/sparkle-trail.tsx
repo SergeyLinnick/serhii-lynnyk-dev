@@ -320,6 +320,7 @@ export function SparkleTrail({
 	return (
 		<canvas
 			ref={canvasRef}
+			aria-hidden="true"
 			className="pointer-events-none fixed inset-0"
 			style={{ zIndex, width: "100vw", height: "100vh" }}
 		/>

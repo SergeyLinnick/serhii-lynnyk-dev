@@ -28,7 +28,7 @@ html:has(.portfolio-theme) {
 	--secondary: oklch(0.92 0.01 286);
 	--secondary-foreground: oklch(0.1 0.01 286);
 	--muted: oklch(0.92 0.01 286);
-	--muted-foreground: oklch(0.45 0.01 286);
+	--muted-foreground: oklch(0.40 0.01 286);
 	--accent: oklch(0.92 0.01 286);
 	--accent-foreground: oklch(0.6 0.2 120);
 	--destructive: oklch(0.55 0.2 20);
@@ -50,7 +50,7 @@ html:has(.portfolio-theme) {
 	--secondary: oklch(0.2 0.02 286);
 	--secondary-foreground: oklch(0.98 0 0);
 	--muted: oklch(0.2 0.02 286);
-	--muted-foreground: oklch(0.6 0.01 286);
+	--muted-foreground: oklch(0.65 0.01 286);
 	--accent: oklch(0.25 0.02 286);
 	--accent-foreground: oklch(0.88 0.2 120);
 	--destructive: oklch(0.6 0.2 20);
