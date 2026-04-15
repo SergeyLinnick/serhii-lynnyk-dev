@@ -2,8 +2,7 @@
 
 import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useGetTasks } from "@workspace/api";
-import type { TaskViewType } from "@workspace/models";
-import { PAGE_URLS } from "@workspace/models";
+import { PAGE_URLS, type TaskViewType } from "@workspace/models/client";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@workspace/ui";
 import { Plus } from "lucide-react";
 import Link from "next/link";

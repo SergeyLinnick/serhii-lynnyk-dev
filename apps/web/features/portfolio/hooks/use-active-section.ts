@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NAV_LINKS } from "../constants";
+import { NAV_LINKS } from "../constants/header";
 
 export function useActiveSection() {
 	const [activeId, setActiveId] = useState<string | null>(null);

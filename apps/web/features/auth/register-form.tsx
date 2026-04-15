@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterFormSchema, type RegisterFormType } from "@workspace/models";
+import { RegisterFormSchema, type RegisterFormType } from "@workspace/models/client";
 import { Button, Input, Label } from "@workspace/ui";
 import { useForm } from "react-hook-form";
 

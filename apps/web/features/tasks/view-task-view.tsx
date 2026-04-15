@@ -1,8 +1,7 @@
 "use client";
 
 import { useDeleteTask, useGetTask } from "@workspace/api";
-import type { TaskViewType } from "@workspace/models";
-import { PAGE_URLS } from "@workspace/models";
+import { PAGE_URLS, type TaskViewType } from "@workspace/models/client";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@workspace/ui";
 import { formatDate } from "@workspace/utils";
 import { ArrowLeft, Trash2 } from "lucide-react";

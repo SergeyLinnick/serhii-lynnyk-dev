@@ -2,6 +2,9 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	experimental: {
+		optimizePackageImports: ["@workspace/ui", "@workspace/models", "@workspace/api", "lucide-react"],
+	},
 	transpilePackages: [
 		"@workspace/api",
 		"@workspace/auth",

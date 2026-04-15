@@ -1,6 +1,6 @@
 "use client";
 
-import { Progress } from "@workspace/ui";
+import { Progress } from "@workspace/ui/components/base/progress";
 import { useEffect, useState } from "react";
 import type { StatusPanelItem } from "../types";
 

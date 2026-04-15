@@ -305,12 +305,13 @@ Usage:
 }
 ```
 
-Import components via the barrel export or directly:
+Import components directly to avoid pulling the entire UI barrel into the module graph:
 
 ```tsx
-// Via barrel (recommended)
-import { Button, Input, Dialog } from "@workspace/ui";
-
-// Direct import
+// Direct import (recommended for feature modules)
 import { Button } from "@workspace/ui/components/base/button";
+import { Card, CardContent } from "@workspace/ui/components/base/card";
+
+// Barrel import (convenience for small scripts or prototyping)
+import { Button, Input, Dialog } from "@workspace/ui";
 ```

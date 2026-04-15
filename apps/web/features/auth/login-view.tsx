@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from "@workspace/auth/client";
-import { PAGE_URLS, type LoginType } from "@workspace/models";
+import { PAGE_URLS, type LoginType } from "@workspace/models/client";
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

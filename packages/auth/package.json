@@ -1,6 +1,7 @@
 {
 	"name": "@workspace/auth",
 	"version": "0.0.1",
+	"sideEffects": false,
 	"dependencies": {
 		"@better-auth/drizzle-adapter": "1.5.3",
 		"@better-auth/infra": "latest",

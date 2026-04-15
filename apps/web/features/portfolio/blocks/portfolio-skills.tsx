@@ -1,4 +1,4 @@
-import { SKILL_ICON_BOXES, skills, SKILLS_SECTION } from "../constants";
+import { SKILL_ICON_BOXES, skills, SKILLS_SECTION } from "../constants/skills";
 import { Container } from "./container";
 import { IconBox } from "./icon-box";
 import { SkillGroupCard } from "./skill-group-card";

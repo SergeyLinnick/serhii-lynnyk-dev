@@ -1,6 +1,6 @@
 import { Activity, GraduationCap, Languages } from "lucide-react";
 import Image from "next/image";
-import { ABOUT_SECTION, activities, EDUCATION, languages, softSkills } from "../constants";
+import { ABOUT_SECTION, activities, EDUCATION, languages, softSkills } from "../constants/about";
 import { Container } from "./container";
 import { SkillGroupCard } from "./skill-group-card";
 
@@ -15,7 +15,7 @@ export function PortfolioAbout() {
 			<div className="absolute inset-0 z-0">
 				<div className="absolute inset-0 overflow-hidden">
 					<Image
-						src="/portfolio/bg-with-me.png"
+						src="/portfolio/bg-with-me.webp"
 						alt=""
 						fill
 						sizes="100vw"

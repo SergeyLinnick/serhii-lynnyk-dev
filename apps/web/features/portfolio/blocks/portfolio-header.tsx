@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "@workspace/ui";
+import { Button } from "@workspace/ui/components/base/button";
 import { cn } from "@workspace/utils";
 import { Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { BRAND_NAME, NAV_LINKS, RESUME_LABEL, RESUME_PATH } from "../constants";
+import { BRAND_NAME, NAV_LINKS, RESUME_LABEL, RESUME_PATH } from "../constants/header";
 import { useActiveSection } from "../hooks/use-active-section";
 import { Container } from "./container";
 

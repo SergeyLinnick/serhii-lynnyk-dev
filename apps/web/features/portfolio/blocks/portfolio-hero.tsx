@@ -1,4 +1,4 @@
-import { buttonVariants } from "@workspace/ui";
+import { buttonVariants } from "@workspace/ui/components/base/button";
 import { cn } from "@workspace/utils";
 import { ArrowRight } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -28,7 +28,7 @@ export function PortfolioHero() {
 			<div className="absolute inset-0 z-0">
 				<div className="relative w-[100vw] h-[100vh] bg-background overflow-hidden">
 					<Image
-						src="/portfolio/hero-bg.jpg"
+						src="/portfolio/hero-bg.webp"
 						alt=""
 						fill
 						sizes="100vw"

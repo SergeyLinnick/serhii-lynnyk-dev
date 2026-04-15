@@ -1,25 +1,26 @@
 {
-  "name": "@workspace/utils",
-  "version": "0.0.1",
-  "dependencies": {
-    "clsx": "^2.1.1",
-    "date-fns": "^4.1.0",
-    "tailwind-merge": "^3.0.1"
-  },
-  "devDependencies": {
-    "@workspace/eslint-config": "workspace:*",
-    "@workspace/prettier-config": "workspace:*",
-    "@workspace/typescript-config": "workspace:*",
-    "eslint": "^9.20.1",
-    "typescript": "^5.9.2"
-  },
-  "exports": {
-    ".": "./src/index.ts"
-  },
-  "private": true,
-  "scripts": {
-    "check-types": "tsc --noEmit",
-    "lint": "eslint . --max-warnings 0"
-  },
-  "type": "module"
+	"name": "@workspace/utils",
+	"version": "0.0.1",
+	"sideEffects": false,
+	"dependencies": {
+		"clsx": "^2.1.1",
+		"date-fns": "^4.1.0",
+		"tailwind-merge": "^3.0.1"
+	},
+	"devDependencies": {
+		"@workspace/eslint-config": "workspace:*",
+		"@workspace/prettier-config": "workspace:*",
+		"@workspace/typescript-config": "workspace:*",
+		"eslint": "^9.20.1",
+		"typescript": "^5.9.2"
+	},
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"private": true,
+	"scripts": {
+		"check-types": "tsc --noEmit",
+		"lint": "eslint . --max-warnings 0"
+	},
+	"type": "module"
 }

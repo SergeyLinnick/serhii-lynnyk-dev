@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema, type LoginType } from "@workspace/models";
+import { LoginSchema, type LoginType } from "@workspace/models/client";
 import { Button, Input, Label } from "@workspace/ui";
 import { useForm } from "react-hook-form";
 

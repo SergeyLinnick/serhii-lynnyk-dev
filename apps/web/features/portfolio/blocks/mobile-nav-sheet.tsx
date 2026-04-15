@@ -1,10 +1,11 @@
 "use client";
 
-import { Button, Sheet, SheetContent, SheetHeader, SheetTitle } from "@workspace/ui";
+import { Button } from "@workspace/ui/components/base/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@workspace/ui/components/base/sheet";
 import { cn } from "@workspace/utils";
 import { Moon, Sun } from "lucide-react";
 import Link from "next/link";
-import { NAV_LINKS, RESUME_LABEL, RESUME_PATH } from "../constants";
+import { NAV_LINKS, RESUME_LABEL, RESUME_PATH } from "../constants/header";
 
 interface MobileNavSheetProps {
 	open: boolean;

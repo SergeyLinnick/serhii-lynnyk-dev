@@ -1,6 +1,6 @@
 "use client";
 
-import { PAGE_URLS } from "@workspace/models";
+import { PAGE_URLS } from "@workspace/models/client";
 import { Button, cn } from "@workspace/ui";
 import { LayoutDashboard, LogOut } from "lucide-react";
 import Link from "next/link";

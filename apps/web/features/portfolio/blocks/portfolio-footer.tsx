@@ -1,4 +1,5 @@
-import { COPYRIGHT_TEXT, SOCIAL_LINKS } from "../constants";
+import { COPYRIGHT_TEXT } from "../constants/footer";
+import { SOCIAL_LINKS } from "../constants/social";
 import { Container } from "./container";
 import { SocialLinkItem } from "./social-link-item";
 

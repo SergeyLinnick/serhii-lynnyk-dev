@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { PAGE_URLS, type TaskViewType } from "@workspace/models";
+import { PAGE_URLS, type TaskViewType } from "@workspace/models/client";
 import { cn } from "@workspace/ui";
 import { formatDate } from "@workspace/utils";
 import { Eye } from "lucide-react";

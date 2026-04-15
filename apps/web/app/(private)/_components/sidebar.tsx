@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "@workspace/auth/client";
-import { PAGE_URLS } from "@workspace/models";
+import { PAGE_URLS } from "@workspace/models/client";
 import { Button, cn, toast } from "@workspace/ui";
 import { CheckSquare, LayoutDashboard, LogOut } from "lucide-react";
 import Link from "next/link";

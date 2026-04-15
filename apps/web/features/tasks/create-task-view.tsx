@@ -1,7 +1,7 @@
 "use client";
 
 import { useCreateTask } from "@workspace/api";
-import { PAGE_URLS, type TaskFormType } from "@workspace/models";
+import { PAGE_URLS, type TaskFormType } from "@workspace/models/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui";
 import { useRouter } from "next/navigation";
 import { TaskForm } from "./blocks/task-form";

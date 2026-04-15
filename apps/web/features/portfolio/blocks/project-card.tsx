@@ -1,16 +1,8 @@
 "use client";
 
-import {
-	Badge,
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from "@workspace/ui";
+import { Badge } from "@workspace/ui/components/base/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/base/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@workspace/ui/components/base/collapsible";
 import { cn } from "@workspace/utils";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";

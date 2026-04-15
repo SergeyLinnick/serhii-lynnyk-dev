@@ -1,4 +1,4 @@
-import { projects, PROJECTS_SECTION } from "../constants";
+import { projects, PROJECTS_SECTION } from "../constants/projects";
 import { Container } from "./container";
 import { ProjectCard } from "./project-card";
 import { SectionHeader } from "./section-header";
