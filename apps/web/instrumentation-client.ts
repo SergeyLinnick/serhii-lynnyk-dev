@@ -10,6 +10,10 @@ Sentry.init({
 
 Sentry.lazyLoadIntegration("replayIntegration")
 	.then(replayIntegration => Sentry.addIntegration(replayIntegration()))
-	.catch(() => {});
+	.catch((error) => {
+		if (process.env.NODE_ENV === "development") {
+			console.warn("Failed to load Sentry replay integration:", error);
+		}
+	});
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

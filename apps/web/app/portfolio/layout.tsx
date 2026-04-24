@@ -1,5 +1,6 @@
 import { ThemeProvider } from "next-themes";
 import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import "./portfolio.css";
 
@@ -17,7 +18,9 @@ const jetBrainsMono = JetBrains_Mono({
 	weight: ["400"],
 });
 
-export default function PortfolioLayout({ children }: { children: ReactNode }) {
+export default async function PortfolioLayout({ children }: { children: ReactNode }) {
+	const nonce = (await headers()).get("x-nonce") ?? undefined;
+
 	return (
 		<div className={`${spaceGrotesk.variable} ${jetBrainsMono.variable} font-body`}>
 			<ThemeProvider
@@ -25,6 +28,7 @@ export default function PortfolioLayout({ children }: { children: ReactNode }) {
 				defaultTheme="dark"
 				storageKey="portfolio-theme"
 				value={{ light: "light-mode", dark: "dark-mode" }}
+				nonce={nonce}
 			>
 				{children}
 			</ThemeProvider>

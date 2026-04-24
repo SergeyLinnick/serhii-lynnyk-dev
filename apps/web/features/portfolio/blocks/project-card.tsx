@@ -36,7 +36,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
 			<div className="grid gap-4">
 				<CardHeader className="relative grid gap-4">
 					<span
-						className="absolute top-4 right-6 text-4xl font-bold text-muted-foreground/30 font-mono leading-none"
+						className="absolute top-4 right-6 text-4xl font-bold text-muted-foreground font-mono leading-none"
 						aria-hidden="true"
 					>
 						{String(index + 1).padStart(2, "0")}

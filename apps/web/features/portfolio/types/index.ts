@@ -33,12 +33,6 @@ export interface IconBoxItem {
 	label: string;
 }
 
-export interface StatusPanelItem {
-	label: string;
-	value: string;
-	progress?: number;
-}
-
 export interface HeroContent {
 	statusBadge: string;
 	headingLines: string[];
