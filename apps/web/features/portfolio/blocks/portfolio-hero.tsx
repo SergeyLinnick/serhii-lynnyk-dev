@@ -12,6 +12,7 @@ import {
 	STATUS_PANEL_TOP,
 } from "../constants";
 import { Container } from "./container";
+import { ScrambleHeading } from "./scramble-heading";
 import { SocialLinkItem } from "./social-link-item";
 
 const LazyVideo = dynamic(() => import("./lazy-video").then(m => m.LazyVideo));
@@ -50,17 +51,10 @@ export function PortfolioHero() {
 						</span>
 						{HERO_CONTENT.statusBadge}
 					</div>
-					<h1 className="text-6xl md:text-8xl font-display tracking-tighter leading-[0.9] drop-shadow-md">
-						{HERO_CONTENT.headingLines.map((line, i) => (
-							<span key={line}>
-								{line}
-								{i < HERO_CONTENT.headingLines.length - 1 && <br />}
-							</span>
-						))}
-						<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-foreground">
-							{HERO_CONTENT.headingAccent}{" "}
-						</span>
-					</h1>
+					<ScrambleHeading
+						headingLines={HERO_CONTENT.headingLines}
+						headingAccent={HERO_CONTENT.headingAccent}
+					/>
 					<p className="md:text-xl text-muted-foreground max-w-md leading-relaxed drop-shadow-sm">
 						{HERO_CONTENT.description}
 					</p>
